@@ -59,17 +59,6 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-//    // Generate a token with custom claims (e.g., roles)
-//    public static String generateToken(String username, String role) {
-//        return Jwts.builder()
-//                .setSubject(username)
-//                .claim("role", role) // Add custom claims
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10-hour validity
-//                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-//                .compact();
-//    }
-
     public static Claims extractClaims(String token) {
         System.out.println("Validating token with secret key: " + secretKey); // Debugging log
         return Jwts.parser()

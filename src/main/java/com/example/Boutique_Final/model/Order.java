@@ -17,6 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
+    public enum OrderStatus {
+        PREPARING, SHIPPED, DELIVERED, CANCELLED
+    }
     @Id
     private String id;
 
@@ -27,9 +30,6 @@ public class Order {
     private String phoneNumber;
 
     private OrderStatus status;
-    public enum OrderStatus {
-        PREPARING, DELIVERING, DELIVERED, CANCELED
-    }
 
     public String getId() {
         return id;
@@ -51,4 +51,7 @@ public class Order {
 
     @DBRef
     private List<OrderItem> items = new ArrayList<>();
+
+
 }
+

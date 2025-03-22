@@ -101,3 +101,91 @@
 //        return orderMapper.toDTO(updatedOrder);
 //    }
 //}
+
+package com.example.Boutique_Final.service;
+
+import com.example.Boutique_Final.Mapper.CartMapper;
+import com.example.Boutique_Final.Mapper.OrderMapper;
+import com.example.Boutique_Final.dto.CartDTO;
+import com.example.Boutique_Final.dto.OrderDTO;
+import com.example.Boutique_Final.exception.ResourceNotFoundException;
+import com.example.Boutique_Final.exception.UserNotFoundException;
+import com.example.Boutique_Final.model.*;
+import com.example.Boutique_Final.repositories.OrderRepository;
+import com.example.Boutique_Final.repositories.ProductRepository;
+import com.example.Boutique_Final.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+    private final OrderRepository orderRepository;
+    private final CartService cartService;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+    private final OrderMapper orderMapper;
+    private final CartMapper cartMapper;
+
+
+    public OrderDTO createOrder(String userId, String address, String phoneNumber) {
+        ObjectId userObjectId;
+        try {
+            userObjectId = new ObjectId(userId); // Convert String to ObjectId
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid user ID format: " + userId);
+        }
+
+        User user = userRepository.findById(userObjectId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setAddress(address);
+        order.setPhoneNumber(phoneNumber);
+        order.setStatus(Order.OrderStatus.PREPARING);
+        order.setCreatedAt(LocalDateTime.now());
+
+        order = orderRepository.save(order);
+
+        // ✅ Convert Order to OrderDTO before returning
+        return convertToDTO(order);
+    }
+
+    // ✅ Helper method to convert Order to OrderDTO
+    private OrderDTO convertToDTO(Order order) {
+        return new OrderDTO(
+                order.getId(),
+                order.getUser().getId().toHexString(),
+                order.getAddress(),
+                order.getPhoneNumber(),
+                order.getStatus(),
+                order.getCreatedAt()
+        );
+    }
+
+
+
+    public List<OrderDTO> getAllOrders() {
+        return orderMapper.toDTOs(orderRepository.findAll());
+    }
+
+    public List<OrderDTO> getUserOrders(String userId) {
+        return orderMapper.toDTOs(orderRepository.findByUser_Id(userId));
+    }
+
+    public OrderDTO updateOrderStatus(String orderId, Order.OrderStatus status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        order.setStatus(status);
+        Order updatedOrder = orderRepository.save(order);
+        return orderMapper.toDTO(updatedOrder);
+    }
+}

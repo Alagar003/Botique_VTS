@@ -1,36 +1,52 @@
-import React from 'react';
-import '../styles/NavBar.css'
-
-const NavBar = () => {
-    return (
-        <header className="navbar">
-            <div className="top-banner">
-                <p>Exclusive For Women!!!</p>
-                <p>Exclusive For Silks!!!</p>
-            </div>
-            <div className="main-nav">
-                <div className="logo">
-                    <img src="../pages/logo.png" alt="Lotus Boutique Logo" />
-                    <h1>LOTUS BOUTIQUE</h1>
-                </div>
-                <ul className="menu">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#women">Women</a></li>
-                    <li><a href="#men">Men</a></li>
-                    <li><a href="#kids">Kids</a></li>
-                    <li><a href="#support">Support</a></li>
-                    <li><a href="#about-us">About Us</a></li>
-                    <li><a href="#lookbooks">Look Books</a></li>
-                </ul>
-                <div className="icons">
-                    <input type="text" placeholder="Search..." />
-                    <i className="icon">👤</i> {/* Replace with appropriate icons */}
-                    <i className="icon">❤️</i>
-                    <i className="icon">🛒</i>
-                </div>
-            </div>
-        </header>
-    );
-};
-
-export default NavBar;
+//
+// import React, { useState, useEffect } from "react";
+// import { Outlet, useNavigate, Link } from "react-router-dom";
+// import "../styles/Home.css";
+// import logo from "../images/logo.jpg";
+//
+// const BottomLayout = () => {
+//     const [user, setUser] = useState(null);
+//     const [showDropdown, setShowDropdown] = useState(false);
+//     const [searchQuery, setSearchQuery] = useState("");
+//     const navigate = useNavigate();
+//
+//
+//
+//     const handleProtectedNavigation = (link) => {
+//         const token = localStorage.getItem("token");
+//         if (!token) {
+//             alert("Please log in to access this page.");
+//             navigate("/login");
+//         } else {
+//             navigate(link); // Navigate if user is logged in
+//         }
+//     };
+//
+//
+//     return (
+//         <div>
+//             {/* Header */}
+//             <div className="down-nav">
+//                 <div>
+//                     <h1>Exclusive For Women!!!</h1>
+//                 </div>
+//                 <div className="h-logo">
+//                     <div>
+//                         <img className="img-style" src={logo} alt="Lotus Boutique Logo" />
+//                     </div>
+//                     <div>
+//                         <h1>LOTUS<br /> BOUTIQUE</h1>
+//                     </div>
+//                 </div>
+//                 <div className="container3">
+//                     <h1>Exclusive for Silks!!!</h1>
+//                 </div>
+//             </div>
+//
+//             {/* Dynamic Content */}
+//             <Outlet/>
+//         </div>
+//     );
+// };
+//
+// export default BottomLayout;

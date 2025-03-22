@@ -38,6 +38,8 @@ const Login = () => {
                 }
             } else {
                 alert(data.message || "Login failed. Please check your credentials.");
+                setEmail('');
+                setPassword('');
             }
         } catch (error) {
             console.error("❌ Error during login:", error.message);

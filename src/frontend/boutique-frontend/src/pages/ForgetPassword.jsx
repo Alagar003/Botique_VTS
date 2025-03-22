@@ -31,6 +31,7 @@ const ForgotPassword = () => {
 
             setMessage("A reset token has been sent to your email.");
             setTokenSent(true); // ✅ Update state to show token input fields
+            alert("A reset token has been sent to your email.")
         } catch (error) {
             console.error("❌ Error:", error.message);
             setMessage("Failed to send reset token. Please try again.");

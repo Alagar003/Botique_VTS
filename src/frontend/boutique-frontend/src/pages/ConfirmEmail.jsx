@@ -27,6 +27,7 @@ const ConfirmEmail = () => {
             if (response.ok) {
                 const data = await response.text();
                 setMessage(data || 'Email confirmed successfully! You can now log in.');
+                alert(data || 'Email confirmed successfully!');
                 navigate("/login");
             } else {
                 const error = await response.text();

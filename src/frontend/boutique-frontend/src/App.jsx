@@ -11,6 +11,10 @@ import ProductList from "./pages/ProductList";
 import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart";
 import Dashboard from "./pages/Profile";
+import AboutUs from "./pages/About";
+// import BottomLayout from "./Components/NavBar";
+import OrderPage from "./pages/OrderDetails";
+import OrderList from "./pages/OrderList"
 
 const App = () => {
     return (
@@ -18,6 +22,7 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path="/" element={<Layout />}>
+                        {/*<Route path="/" element={<BottomLayout />} />*/}
                         <Route index element={<Home />} />
                         <Route path="login" element={<Login />} />
                         <Route path="signup" element={<CreateAccount />} />
@@ -28,6 +33,10 @@ const App = () => {
                         <Route path="cart" element={<Cart />} />
                         <Route path="*" element={<NotFound />} />
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/about" element={<AboutUs />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/order-details" element={<OrderPage />} />
+                        <Route path="/order-list" element={<OrderList />} />
                     </Route>
                 </Routes>
             </Router>

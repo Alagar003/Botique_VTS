@@ -55,32 +55,6 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // Endpoint to get the currently logged-in user's details
-//    @GetMapping("/user")
-//    public ResponseEntity<?> getCurrentUser(@RequestHeader(value = "Authorization", required = false) String authHeader) {
-//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//            return ResponseEntity.status(401).body("Missing or invalid Authorization header");
-//        }
-//
-//        try {
-//            String token = authHeader.substring(7); // Remove "Bearer " prefix
-//            String email = jwtService.extractUsername(token);
-//
-//            User user = userService.getUserByEmail(email);
-//            if (user != null) {
-//                return ResponseEntity.ok(user);
-//            } else {
-//                return ResponseEntity.status(404).body("User not found");
-//            }
-//        } catch (ExpiredJwtException e) {
-//            return ResponseEntity.status(401).body("Token expired");
-//        } catch (MalformedJwtException e) {
-//            return ResponseEntity.status(401).body("Invalid token format");
-//        } catch (SignatureException e) {
-//            return ResponseEntity.status(401).body("Invalid token signature");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(401).body("Invalid or expired token");
-//        }
 
     @GetMapping("/user")
     public ResponseEntity<?> getCurrentUser(@RequestHeader(value = "Authorization", required = false) String authHeader) {

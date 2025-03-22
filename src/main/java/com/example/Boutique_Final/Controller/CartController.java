@@ -559,27 +559,6 @@ public class CartController {
         }
     }
 
-
-//    @GetMapping("/{userId}")
-//    public ResponseEntity<?> getCart(@PathVariable String userId) {
-//        Optional<Cart> optionalCart = cartService.getCartByUserId(userId);
-//        Cart cart = optionalCart.orElse(null);
-//
-//
-//        if (cart == null) {
-//            return ResponseEntity.ok(Collections.singletonMap("cartItems", new ArrayList<>()));
-//        }
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("id", cart.getId());
-//        response.put("userId", cart.getUserId());
-//        response.put("cartItems", cart.getItems()); // Ensure frontend gets `cartItems`
-//        response.put("totalPrice", cart.getTotalPrice());
-//
-//        return ResponseEntity.ok(response);
-//    }
-
-
     @GetMapping("/{userId}")
     public ResponseEntity<?> getCartByUserId(@PathVariable String userId) {
         Optional<Cart> cart = cartService.getCartByUserId(userId);
@@ -600,77 +579,6 @@ public class CartController {
 
         return ResponseEntity.ok(Map.of("items", items));
     }
-
-
-
-
-
-
-
-
-//    @DeleteMapping("/clear/{userId}")
-//    public ResponseEntity<String> clearCart(@PathVariable String userId) {
-//        logger.info("Clearing cart for userId: {}", userId);
-//        cartService.clearCart(userId);
-//        return ResponseEntity.ok("Cart cleared successfully");
-//    }
-//@PutMapping("/updateQuantity")
-//public ResponseEntity<?> updateCart(
-//        @RequestBody Map<String, String> request,
-//        @AuthenticationPrincipal UserDetails userDetails
-//) {
-//    String userId = request.get("userId");
-//
-//    // 🔍 Debug: Check if authentication is working
-//    if (userDetails == null) {
-//        System.out.println("❌ DEBUG: userDetails is NULL. Authentication might not be working.");
-//    } else {
-//        System.out.println("✅ DEBUG: Extracted user from JWT: " + userDetails.getUsername());
-//    }
-//
-//    // If userId is null, get it from userDetails
-//    if (userId == null && userDetails != null) {
-//        userId = userDetails.getUsername();
-//    }
-//
-//    String productId = request.get("productId");
-//    String action = request.get("action");
-//
-//    System.out.println("📝 Received request - User ID: " + userId + ", Product ID: " + productId + ", Action: " + action);
-//
-//    // ✅ Validate input fields
-//    if (userId == null || productId == null || action == null) {
-//        return ResponseEntity.badRequest().body(Map.of("message", "Invalid request data"));
-//    }
-//
-//    // ✅ Convert userId to ObjectId if stored as ObjectId in MongoDB
-//    ObjectId userObjectId;
-//    try {
-//        userObjectId = new ObjectId(userId);
-//    } catch (IllegalArgumentException e) {
-//        return ResponseEntity.badRequest().body(Map.of("message", "Invalid User ID format"));
-//    }
-//
-//    // ✅ Convert productId to ObjectId if needed
-//    if (!ObjectId.isValid(productId)) {
-//        return ResponseEntity.badRequest().body(Map.of("message", "Invalid Product ID format"));
-//    }
-//    ObjectId productObjectId = new ObjectId(productId);
-//
-//    try {
-//        CartDTO updatedCart = cartService.updateItemQuantity(userObjectId.toString(), productObjectId.toString(), action);
-//        return ResponseEntity.ok(updatedCart);
-//    } catch (ResourceNotFoundException e) {
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
-//    } catch (IllegalArgumentException e) {
-//        return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-//    } catch (Exception e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "An unexpected error occurred"));
-//    }
-//}
-
-
-
 
 
     @PutMapping("/updateQuantity")

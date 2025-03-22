@@ -44,7 +44,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Public access for auth endpoints
                         .requestMatchers("/api/products/**").authenticated()
-                        .requestMatchers("/api/cart/**").authenticated() // Authentication required for cart API
+                        .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/orders/**").permitAll()// Authentication required for cart API
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session
