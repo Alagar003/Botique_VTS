@@ -113,6 +113,9 @@ package com.example.Boutique_Final.model;//package com.example.Boutique_Final.mo
 
 import com.example.Boutique_Final.dto.CommentDTO;
 import com.example.Boutique_Final.model.Comment;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -130,10 +133,15 @@ import java.util.List;
 public class Product {
     @Id
     private ObjectId id;
+    @NotBlank
     private String name;
+    @NotBlank
+    @Size(max=500)
     private String description;
+    @Min(0)
     private Double price;
-    private Integer quantity;
+    @Min(0)
+    private Integer quantity = 0;
     private String image;
     private String category;
 

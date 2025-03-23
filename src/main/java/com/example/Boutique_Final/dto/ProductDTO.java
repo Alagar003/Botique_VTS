@@ -117,6 +117,8 @@
 
 package com.example.Boutique_Final.dto;
 
+import com.example.Boutique_Final.model.Product;
+
 import java.util.List;
 
 public class ProductDTO {
@@ -129,9 +131,6 @@ public class ProductDTO {
     private String category;
     private List<CommentDTO> comments;
 
-    // No-args constructor (needed for deserialization)
-    public ProductDTO() {
-    }
 
     // All-args constructor
     public ProductDTO(String id, String name, String description, Double price, Integer quantity, String image, String category, List<CommentDTO> comments) {
@@ -144,6 +143,21 @@ public class ProductDTO {
         this.category = category;
         this.comments = comments;
     }
+
+
+    public static ProductDTO fromEntity(Product product) {
+        return new ProductDTO(
+                product.getId().toString(), // Convert ObjectId to String
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getQuantity(),
+                product.getImage(),
+                product.getCategory(),
+                null // Set comments if needed
+        );
+    }
+
 
     // Getters and Setters
     public String getId() {

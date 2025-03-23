@@ -37,17 +37,17 @@ public class ProductController {
     }
 
     // Get all products (Paginated and Sorted)
-    @GetMapping
-    public ResponseEntity<Page<ProductListDTO>> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
-        Page<ProductListDTO> products = productService.findAllWithoutComments(pageable);
-        return new ResponseEntity<>(products, HttpStatus.OK);
-    }
+//    @GetMapping
+//    public ResponseEntity<Page<ProductListDTO>> getAllProducts(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(defaultValue = "name") String sortBy,
+//            @RequestParam(defaultValue = "asc") String sortDir) {
+//
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+//        Page<ProductListDTO> products = productService.findAllWithoutComments(pageable);
+//        return new ResponseEntity<>(products, HttpStatus.OK);
+//    }
 
 
 
@@ -105,7 +105,7 @@ public class ProductController {
     }
 
     // Delete a product
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
         if (productService.getProductById(id) != null) {
             productService.deleteProduct(id);
@@ -114,4 +114,35 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable String id, @Valid @RequestBody ProductDTO productDTO) {
+        try {
+            ProductDTO updatedProduct = productService.updateProduct(id, productDTO);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (Exception e) {
+            logger.error("Error updating product: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
+    @GetMapping
+    public ResponseEntity<?> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        try {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+            Page<ProductListDTO> products = productService.findAllWithoutComments(pageable);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            logger.error("Error fetching products: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching products: " + e.getMessage());
+        }
+    }
+
+
+
 }

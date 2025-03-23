@@ -56,9 +56,9 @@ import java.util.List;
 
 public interface ProductRepository extends MongoRepository<Product, String> {
 
-    // 🟢 Query to fetch products without comments (pagination supported)
-    @Query("{ 'comments': { $exists: false } }")
-    Page<Product> findAllWithoutComments(Pageable pageable);
+//    // 🟢 Query to fetch products without comments (pagination supported)
+//    @Query("{ 'comments': { $exists: false } }")
+//    Page<Product> findAllWithoutComments(Pageable pageable);
 
     // 🟢 Search by name or description (case-insensitive search using regex)
     @Query("{ '$or': [ { 'name': { $regex: ?0, $options: 'i' } }, { 'description': { $regex: ?1, $options: 'i' } } ] }")
@@ -85,4 +85,11 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     // 🟢 Count the number of products in a specific category
     @Query("{ 'category': { $regex: ?0, $options: 'i' } }")
     long countByCategory(String category);
+
+
+    // 🟢 Query to fetch products without comments (pagination supported)
+    @Query("{ '$or': [ { 'comments': { $exists: false } }, { 'comments': { $size: 0 } } ] }")
+    Page<Product> findAllWithoutComments(Pageable pageable);
+
+
 }

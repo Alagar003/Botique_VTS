@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Public access for auth endpoints
-                        .requestMatchers("/api/products/**").authenticated()
+                        .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/api/orders/**").permitAll()// Authentication required for cart API
                         .anyRequest().permitAll()

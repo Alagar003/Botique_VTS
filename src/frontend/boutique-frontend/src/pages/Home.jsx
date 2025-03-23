@@ -31,19 +31,19 @@ const Home = () => {
             <h1 className= "heading">Shop by Category</h1>
             <div className="category-section">
                 <div className="category" onClick={() => handleNavigation('Women')}>
-                    <img src={women} alt="Women Collections" />
+                    <img src={women} alt="Women Collections" className="img-style"/>
                     <h3>Women Collections</h3>
                 </div>
                 <div className="category" onClick={() => handleNavigation('Men')}>
-                    <img src={men} alt="Men Collections" />
+                    <img src={men} alt="Men Collections"  className="img-style"/>
                     <h3>Men Collections</h3>
                 </div>
                 <div className="category" onClick={() => handleNavigation('Girls')}>
-                    <img src={girl} alt="Girls Collections" />
+                    <img src={girl} alt="Girls Collections"  className="img-style"/>
                     <h3>Girls Collections</h3>
                 </div>
                 <div className="category" onClick={() => handleNavigation('Boys')}>
-                    <img src={boy} alt="Boys Collections" />
+                    <img src={boy} alt="Boys Collections" className="img-style" />
                     <h3>Boys Collections</h3>
                 </div>
             </div>

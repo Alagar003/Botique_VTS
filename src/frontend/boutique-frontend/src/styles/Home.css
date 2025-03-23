@@ -4,6 +4,7 @@ body{
     margin: 0;
     padding: 0;
     background-color: #fff;
+    width:96%;
 }/* General Page Layout */
 .homepage {
     font-family: 'Arial', sans-serif;
@@ -16,10 +17,12 @@ body{
     background-color: #ff3385; /* Pink header */
     color: white;
     font-weight: bold;
-    width: auto;
+    width: 104%;
     height: auto;
     display: flex;
     justify-content: space-evenly;
+    border-radius: 20px;
+
 }
 
 .h-logo{
@@ -38,7 +41,7 @@ body{
 .img-style{
     width: 200px;
     height: 110px;
-    border-radius: 50%;
+    border-radius: 10%;
 }
 
 .top{
@@ -46,6 +49,7 @@ body{
     flex-direction: row;
     justify-content: space-between;
     padding: 0 20px;
+    width: 100%;
 }
 
 .navbar a {
@@ -67,21 +71,22 @@ body{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 0;
+    /*padding: 5px 0;*/
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 1rem;
+    /*padding: 1rem;*/
     text-align: center;
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 104%;
 }
 
 .menu {
     list-style: none;
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    gap: 8px;
 }
 
 .menu li a {
@@ -99,10 +104,38 @@ body{
 }
 
 .search-bar {
-    flex-direction: row;
     display: flex;
+    align-items: center;
     border: 1px solid #ddd;
-    width: 200px;
+    width: 250px;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 5px;
+    background-color: #fff;
+    width: 350px;
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    width: 20px;
+}
+
+.search-bar button {
+    background-color: #ff3385;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 0 20px 20px 0;
+    width: 60px;
+}
+
+.search-bar button:hover {
+    background-color: #e62e73;
 }
 
 /* Banner Section */
@@ -204,13 +237,14 @@ li:hover {
 }
 
 .down-nav{
-    padding: 20px;
-    width: 100%;
+    padding: 10px;
+    width: 102.2%;
     font-size: 1.2rem;
     display: flex;
     font-family: 'Times New Roman', Times, serif;
         background-color: #ff3385;
     justify-content: space-evenly;
+    border-radius: 15px;
 }
 
 .liststyle{
