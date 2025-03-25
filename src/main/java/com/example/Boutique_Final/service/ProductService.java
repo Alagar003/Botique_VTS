@@ -1,6 +1,7 @@
 package com.example.Boutique_Final.service;
 
 import com.example.Boutique_Final.dto.ProductListDTO;
+import com.example.Boutique_Final.exception.ResourceNotFoundException;
 import com.example.Boutique_Final.model.Product;
 
 
@@ -196,6 +197,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -230,30 +232,26 @@ public class ProductService {
                 .map(ProductDTO::fromEntity)
                 .collect(Collectors.toList());
     }
-
-    // ✅ Get product by ID
     public ProductDTO getProductById(String id) {
-        Optional<Product> product = productRepository.findById(id);
-        return product.map(ProductDTO::fromEntity).orElse(null);
+        return productRepository.findById(id)
+                .map(ProductDTO::fromEntity)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
     }
 
+
     public ProductDTO updateProduct(String id, ProductDTO productDTO) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            product.setName(productDTO.getName());
-            product.setDescription(productDTO.getDescription());
-            product.setPrice(productDTO.getPrice());
-            product.setQuantity(productDTO.getQuantity());
-            product.setImage(productDTO.getImage());
-            product.setCategory(productDTO.getCategory());
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setQuantity(productDTO.getQuantity());
+        product.setImage(productDTO.getImage());
+        product.setCategory(productDTO.getCategory());
 
-            Product updatedProduct = productRepository.save(product);
-            return ProductDTO.fromEntity(updatedProduct); // ✅ Return ProductDTO, not ResponseEntity
-        } else {
-            throw new RuntimeException("Product not found"); // ✅ Throw exception if not found
-        }
+        return ProductDTO.fromEntity(productRepository.save(product));
+
     }
 
     public List<ProductListDTO> searchProducts(String keyword) {
@@ -265,7 +263,8 @@ public class ProductService {
                         product.getDescription(),
                         product.getPrice().doubleValue(),
                         product.getQuantity(),
-                        product.getImage()
+                        product.getImage(),
+                        product.getCategory()
                 ))
                 .collect(Collectors.toList());
     }
@@ -279,7 +278,8 @@ public class ProductService {
                         product.getDescription(),
                         product.getPrice().doubleValue(),
                         product.getQuantity(),
-                        product.getImage()
+                        product.getImage(),
+                        product.getCategory()
                 ))
                 .collect(Collectors.toList());
     }
@@ -309,10 +309,12 @@ public class ProductService {
                 product.getDescription(),
                 product.getPrice() != null ? product.getPrice() : 0.0,  // Default to 0.0 if null
                 product.getQuantity(),
-                product.getImage()
+                product.getImage(),
+                product.getCategory()
         ));
 
     }
+
 
     }
 

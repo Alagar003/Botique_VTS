@@ -1,5 +1,6 @@
 package com.example.Boutique_Final.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import com.example.Boutique_Final.dto.*;
@@ -30,6 +31,10 @@ public class AuthController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+
+    @Value("${admin.organization.password}")
+    private String adminOrgPassword;  // Load the admin password from properties
+
     // Explicit Constructor Injection
     public AuthController(AuthService authService, UserService userService, JwtService jwtService, AuthenticationManager authenticationManager) {
         this.authService = authService;
@@ -39,11 +44,52 @@ public class AuthController {
     }
 
     // 🟢 Register User
+//    @PostMapping("/register")
+//    public ResponseEntity<String> register(@Valid @RequestBody User user) {
+//        userService.registerUser(user);
+//        return ok("Registration successful. Check your email for confirmation.");
+//    }
+
+
+//    @PostMapping("/register")
+//    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
+//        userService.registerUser(request);
+//        return ok("Registration successful. Check your email for confirmation.");
+//    }
+
+//    @PostMapping("/register")
+//    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+//        try {
+//            userService.registerUser(request);
+//            return ResponseEntity.ok("Registration successful. Check your email for confirmation.");
+//        } catch (IllegalStateException e)  {
+//            return ResponseEntity.badRequest().body(e.getMessage()); // Return error message
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("An unexpected error occurred.");
+//        }
+//    }
+
+
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody User user) {
-        userService.registerUser(user);
-        return ok("Registration successful. Check your email for confirmation.");
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+        // Validate organization password for admin registration
+        if ("ADMIN".equalsIgnoreCase(request.getRole())) {
+            if (request.getOrganizationPassword() == null || !request.getOrganizationPassword().equals(adminOrgPassword)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"message\": \"Invalid organization password for admin registration.\"}");
+            }
+        }
+
+        userService.registerUser(request);  // No need to assign to a User object
+        return ResponseEntity.ok("{\"message\": \"User registered successfully!\"}");
     }
+
+
+
+
+
+
 
     // 🟢 Email Confirmation
     @PostMapping("/confirm-email")

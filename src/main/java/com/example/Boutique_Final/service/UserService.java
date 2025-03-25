@@ -1,6 +1,7 @@
 package com.example.Boutique_Final.service;
 
 import com.example.Boutique_Final.dto.ChangePasswordRequest;
+import com.example.Boutique_Final.dto.RegisterRequest;
 import com.example.Boutique_Final.exception.ResourceNotFoundException;
 import com.example.Boutique_Final.model.User;
 import com.example.Boutique_Final.repositories.UserRepository;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +29,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
+    @Value("${admin.organization.password}")  // Inject organization password from properties
+    private String adminOrgPassword;
+
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
@@ -34,34 +39,41 @@ public class UserService {
         this.emailService = emailService;
     }
 
+
+    @Value("${admin.organization.password}")  // Inject organization password from properties
+    private String organizationPassword;
+
+
+
+
     // 🟢 Register New User
-    public User registerUser(User user) {
-        // Check if user already exists
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already taken");
+    public User registerUser(RegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalStateException("Email already taken.");
         }
 
-        // Encrypt password and set role
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(User.Role.CUSTOMER);  // Set default role to CUSTOMER
+        User.Role role;
+        try {
+            role = User.Role.valueOf(request.getRole().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Invalid role selected.");
+        }
 
-        // Generate confirmation code and set email status
+        User user = new User();
+        user.setUsername(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(role);
         user.setConfirmationCode(generateConfirmationCode());
         user.setEmailConfirmation(false);
 
-        // Send confirmation email with error handling
-        try {
-            emailService.sendConfirmationCode(user);
-        } catch (Exception e) {
-            logger.error("Failed to send confirmation email to {}: {}", user.getEmail(), e.getMessage());
-            throw new RuntimeException("Failed to send confirmation email.");
-        }
+        emailService.sendConfirmationCode(user);
 
-        // Save user and log info
-        User savedUser = userRepository.save(user);
-        logger.info("User registered successfully: {}", savedUser.getEmail());
-        return savedUser;
+        return userRepository.save(user);  // ✅ Now returning User
     }
+
+
+
 
     public User loginUser(String email, String password) {
         User user = userRepository.findByEmail(email)

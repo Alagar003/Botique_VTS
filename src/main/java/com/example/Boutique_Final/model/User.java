@@ -59,6 +59,12 @@ public class User implements UserDetails {
         return email;
     }
 
+    public void setUsername(String username) {
+        this.email = username;  // Since username is derived from email
+    }
+
+
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

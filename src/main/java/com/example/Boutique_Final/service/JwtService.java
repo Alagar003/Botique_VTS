@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.function.Function;
@@ -43,16 +44,39 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean validateToken(String token, String username) {
+//    public boolean validateToken(String token, String username) {
+//        try {
+//            String extractedUsername = extractUsername(token);
+//            logger.info("Validating token for user: {}", extractedUsername);
+//            return extractedUsername.equals(username) && !isTokenExpired(token);
+//        } catch (Exception e) {
+//            logger.error("Token validation error: {}", e.getMessage());
+//            return false;
+//        }
+//    }
+
+
+
+    public boolean validateToken(String token, UserDetails userDetails) {
         try {
             String extractedUsername = extractUsername(token);
-            logger.info("Validating token for user: {}", extractedUsername);
-            return extractedUsername.equals(username) && !isTokenExpired(token);
+            String extractedRole = extractRole(token); // Extract role from token
+
+            logger.info("Validating token for user: {}, role: {}", extractedUsername, extractedRole);
+
+            return extractedUsername.equals(userDetails.getUsername())
+                    && !isTokenExpired(token);
         } catch (Exception e) {
             logger.error("Token validation error: {}", e.getMessage());
             return false;
         }
     }
+
+    public String extractRole(String token) {
+        return extractClaims(token, claims -> claims.get("role", String.class));
+    }
+
+
 
     public String extractUsername(String token) {
         try {

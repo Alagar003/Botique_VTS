@@ -1,10 +1,8 @@
 
 
 package com.example.Boutique_Final.service;
-
 import com.example.Boutique_Final.Mapper.CartMapper;
 import com.example.Boutique_Final.dto.CartDTO;
-import com.example.Boutique_Final.dto.CartItemDTO;
 import com.example.Boutique_Final.exception.ResourceNotFoundException;
 import com.example.Boutique_Final.exception.UserNotFoundException;
 import com.example.Boutique_Final.model.Cart;
@@ -24,13 +22,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -69,150 +62,6 @@ public class CartService {
     }
 
 
-//    public CartDTO addToCart(String email, String productId, int quantity) {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
-//
-//        ObjectId userObjectId = user.getId(); // Direct assignment, assuming user.getId() is already an ObjectId.
-//
-//        Cart cart = cartRepository.findByUserId(userObjectId).orElseGet(() -> {
-//            Cart newCart = new Cart();
-//            newCart.setUserId(userObjectId);
-//            newCart.setItems(new ArrayList<>());
-//            return cartRepository.save(newCart);
-//        });
-//
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
-//
-//        cart.getItems().stream()
-//                .filter(item -> item.getProduct().getId().equals(product.getId()))
-//                .findFirst()
-//                .ifPresentOrElse(
-//                        item -> item.setQuantity(item.getQuantity() + quantity),
-//                        () -> cart.getItems().add(new CartItem(product, quantity))
-//                );
-//
-//        return cartMapper.toDTO(cartRepository.save(cart));
-//    }
-//
-//
-//
-//    public CartDTO updateItemQuantity(String email, String productId, String action) {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UserNotFoundException("User not found for email: " + email));
-//
-//        Cart cart = cartRepository.findByUserId(user.getId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user ID: " + user.getId()));
-//
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
-//
-//        cart.getItems().removeIf(item -> {
-//            if (item.getProduct().getId().equals(product.getId())) {
-//                if ("decrease".equals(action) && item.getQuantity() > 1) {
-//                    item.setQuantity(item.getQuantity() - 1);
-//                    return false;
-//                }
-//                return true;
-//            }
-//            return false;
-//        });
-//
-//        return cartMapper.toDTO(cartRepository.save(cart));
-//    }
-
-
-//    public CartDTO addToCart(String email, String productId, int quantity) {
-//        // Retrieve the user by email
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UserNotFoundException("User  not found for email: " + email));
-//
-//        ObjectId userObjectId = user.getId(); // Assuming user.getId() is already an ObjectId.
-//
-//        // Retrieve or create the user's cart
-//        Cart cart = cartRepository.findByUserId(userObjectId).orElseGet(() -> {
-//            Cart newCart = new Cart();
-//            newCart.setUserId(userObjectId);
-//            newCart.setItems(new ArrayList<>());
-//            return cartRepository.save(newCart);
-//        });
-//
-//        // Retrieve the product by ID
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
-//
-//        // Log the current state of the cart before adding the item
-//        logger.info("Current cart items before adding: {}", cart.getItems());
-//
-//        // Check if the product is already in the cart
-//        cart.getItems().stream()
-//                .filter(item -> item.getProduct().getId().equals(product.getId()))
-//                .findFirst()
-//                .ifPresentOrElse(
-//                        item -> {
-//                            // If the item exists, update the quantity
-//                            item.setQuantity(item.getQuantity() + quantity);
-//                            logger.info("Updated quantity for product ID {}: new quantity is {}", productId, item.getQuantity());
-//                        },
-//                        () -> {
-//                            // If the item does not exist, add a new CartItem
-//                            CartItem newItem = new CartItem(product, quantity);
-//                            cart.getItems().add(newItem);
-//                            logger.info("Added new item to cart: product ID {}, quantity {}", productId, quantity);
-//                        }
-//                );
-//
-//        // Save the updated cart and log the new state
-//        Cart updatedCart = cartRepository.save(cart);
-//        logger.info("Cart updated successfully: {}", updatedCart.getItems());
-//
-//        // Map the updated cart to DTO and return
-//        return cartMapper.toDTO(updatedCart);
-//    }
-
-
-//    public CartDTO addToCart(String email, String productId, int quantity) {
-//        // Retrieve the user by email
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UserNotFoundException("User  not found for email: " + email));
-//
-//        ObjectId userObjectId = user.getId(); // Assuming user.getId() is already an ObjectId.
-//
-//        // Retrieve or create the user's cart
-//        Cart cart = cartRepository.findByUserId(userObjectId).orElseGet(() -> {
-//            Cart newCart = new Cart();
-//            newCart.setUserId(userObjectId);
-//            newCart.setItems(new ArrayList<>());
-//            return cartRepository.save(newCart);
-//        });
-//
-//        // Retrieve the product by ID
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
-//
-//        // Check if the product is already in the cart
-//        cart.getItems().stream()
-//                .filter(item -> item.getProduct().getId().equals(product.getId()))
-//                .findFirst()
-//                .ifPresentOrElse(
-//                        item -> {
-//                            // If the item exists, update the quantity
-//                            item.setQuantity(item.getQuantity() + quantity);
-//                        },
-//                        () -> {
-//                            // If the item does not exist, add a new CartItem
-//                            CartItem newItem = new CartItem(product, quantity);
-//                            cart.getItems().add(newItem);
-//                        }
-//                );
-//
-//        // Save the updated cart
-//        Cart updatedCart = cartRepository.save(cart);
-//
-//        // Map the updated cart to DTO and return
-//        return cartMapper.toDTO(updatedCart);
-//    }
 
 
 
@@ -229,21 +78,26 @@ public class CartService {
     }
 
     public CartDTO addToCart(String userId, String productId, int quantity) {
+        // Validate quantity
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than zero.");
+        }
+
         // Convert userId to ObjectId
         ObjectId userObjectId = new ObjectId(userId);
 
         // Fetch the product to check stock
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
 
         // Check if enough stock is available
         if (product.getQuantity() < quantity) {
-            throw new IllegalArgumentException("Not enough stock available");
+            throw new IllegalArgumentException("Not enough stock available for product ID: " + productId);
         }
 
         // Find or create a cart for the user
         Cart cart = cartRepository.findByUserId(userObjectId)
-                .orElseGet(() -> createNewCartForUser(userObjectId)); // Ensure this method also expects ObjectId
+                .orElseGet(() -> createNewCartForUser (userObjectId));
 
         // Add product to cart
         cart.addItem(product, quantity);
@@ -257,72 +111,6 @@ public class CartService {
 
         return cartMapper.toDTO(cart); // Return the updated cart as DTO
     }
-
-
-//    public CartDTO addToCart(String userId, String productId, int quantity) {
-//        // Convert userId to ObjectId
-//        ObjectId userObjectId = new ObjectId(userId);
-//
-//        // Fetch the product to check stock
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-//
-//        // Check if enough stock is available
-//        if (product.getQuantity() < quantity) {
-//            throw new IllegalArgumentException("Not enough stock available");
-//        }
-//
-//        // Find or create a cart for the user
-//        Cart cart = cartRepository.findByUserId(userObjectId)
-//                .orElseGet(() -> createNewCartForUser (userObjectId)); // Create a new cart if none exists
-//
-//        // Add product to cart
-//        cart.addItem(product, quantity);
-//
-//        // Decrement stock
-//        product.setQuantity(product.getQuantity() - quantity);
-//        productRepository.save(product); // Save updated product stock
-//
-//        // Calculate total price
-//        double totalPrice = cart.getItems().stream()
-//                .mapToDouble(item -> {
-//                    Double price = item.getPrice(); // Get the price of the item
-//                    return (price != null ? price : 0.0) * item.getQuantity(); // Handle null price
-//                })
-//                .sum();
-//        cart.setTotalPrice(totalPrice); // Update the cart's total price
-//
-//        // Save updated cart
-//        cartRepository.save(cart);
-//
-//        return cartMapper.toDTO(cart); // Return the updated cart as DTO
-//    }
-
-
-//    public CartDTO addToCart(String userId, String productId, int quantity) {
-//        // Fetch user using String ID
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
-//
-//        // Fetch product using String ID (no conversion needed)
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
-//
-//        ObjectId userObjectId = new ObjectId(userId); // Convert only for CartRepository
-//        Cart cart = cartRepository.findByUserId(userObjectId)
-//                .orElse(new Cart(user));
-//
-//        cart.addItem(product, quantity);
-//        cartRepository.save(cart);
-//
-//        return new CartDTO(cart);
-//    }
-//
-
-
-
-
-
 
 
 
@@ -352,7 +140,7 @@ public class CartService {
 
     public Optional<Cart> getCartByUserId(String userId) {
         try {
-            ObjectId objectId = new ObjectId(userId); // Ensure conversion if stored as ObjectId
+            ObjectId objectId = new ObjectId(userId);
             return cartRepository.findByUserId(objectId);
         } catch (IllegalArgumentException e) {
             return Optional.empty(); // Handle invalid userId
@@ -364,11 +152,9 @@ public class CartService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public CartDTO updateItemQuantity(String userId, String productId, String action) {
-        System.out.println("🔍 DEBUG: Searching cart for userId: " + userId);
-        System.out.println("🔍 DEBUG: Received productId: " + productId);
 
-        // Convert userId to ObjectId
+
+    public CartDTO updateItemQuantity(String userId, String productId, String action) {
         ObjectId userObjectId;
         try {
             userObjectId = new ObjectId(userId);
@@ -376,13 +162,12 @@ public class CartService {
             throw new IllegalArgumentException("❌ Invalid userId format: " + userId);
         }
 
-        // Convert productId to ObjectId
         if (!ObjectId.isValid(productId)) {
             throw new IllegalArgumentException("❌ Invalid productId format: " + productId);
         }
         ObjectId productObjectId = new ObjectId(productId);
 
-        // 🔍 Query the cart using userId as ObjectId
+        // Query the cart using userId as ObjectId
         Query cartQuery = new Query(Criteria.where("userId").is(userObjectId));
         Cart existingCart = mongoTemplate.findOne(cartQuery, Cart.class, "cart");
 
@@ -390,45 +175,52 @@ public class CartService {
             throw new ResourceNotFoundException("🛑 No cart found for userId: " + userId);
         }
 
-        // 🔍 Check if product exists in the cart
-        boolean productExists = existingCart.getItems().stream()
-                .anyMatch(item -> item.getProduct().getId().equals(productObjectId));
+        // Check if product exists in the cart
+        Optional<CartItem> cartItemOptional = existingCart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productObjectId))
+                .findFirst();
 
-        if (!productExists) {
+        if (cartItemOptional.isEmpty()) {
             throw new ResourceNotFoundException("❌ Product ID " + productId + " not found in cart");
         }
 
-        // 🔄 Update quantity based on action
-        Query updateQuery = new Query(
-                Criteria.where("userId").is(userObjectId).and("items.product.id").is(productObjectId)
-        );
+        CartItem cartItem = cartItemOptional.get();
+        int currentQuantity = cartItem.getQuantity();
 
-        Update update = new Update();
+        // Update quantity based on action
         if ("increase".equals(action)) {
-            update.inc("items.$.quantity", 1);
+            cartItem.setQuantity(currentQuantity + 1);
+            // Decrease stock
+            Product product = cartItem.getProduct();
+            product.setQuantity(product.getQuantity() - 1);
+            productRepository.save(product); // Save updated product stock
         } else if ("decrease".equals(action)) {
-            update.inc("items.$.quantity", -1);
+            if (currentQuantity > 1) {
+                cartItem.setQuantity(currentQuantity - 1);
+                // Increase stock
+                Product product = cartItem.getProduct();
+                product.setQuantity(product.getQuantity() + 1);
+                productRepository.save(product); // Save updated product stock
+            } else {
+                throw new IllegalArgumentException("Quantity cannot be less than 1.");
+            }
         } else {
             throw new IllegalArgumentException("Invalid action: " + action);
         }
 
-        mongoTemplate.updateFirst(updateQuery, update, "cart");
-
-        // 🔄 Fetch updated cart
-        Cart updatedCart = mongoTemplate.findOne(cartQuery, Cart.class, "cart");
-        if (updatedCart == null) {
-            throw new ResourceNotFoundException("Cart not found after update");
-        }
-
-        return cartMapper.toDTO(updatedCart);
+        // Save updated cart
+        cartRepository.save(existingCart);
+        return new CartDTO(existingCart, userRepository); // Use the constructor that takes Cart and UserRepository
     }
+
+
 
 
     public boolean removeProductFromCart(String email, String productId) {
         // Find user by email
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
-            logger.error("User not found with email: {}", email);
+            logger.error("User  not found with email: {}", email);
             return false;
         }
 
@@ -451,12 +243,17 @@ public class CartService {
             return false; // Invalid product ID format
         }
 
-        // Remove product from cart
+        // Remove product from cart and update stock
         boolean removed = cart.getItems().removeIf(cartItem -> {
-            // Check if the product ObjectId inside the cart item matches the provided productId
-            ObjectId cartProductId = cartItem.getProduct().getId(); // Ensure `getProduct()` returns the correct ObjectId
-            logger.info("Comparing product ID {} with {}", cartProductId, productObjectId);
-            return cartProductId != null && cartProductId.equals(productObjectId);
+            ObjectId cartProductId = cartItem.getProduct().getId();
+            if (cartProductId != null && cartProductId.equals(productObjectId)) {
+                // Increase stock of the product
+                Product product = cartItem.getProduct();
+                product.setQuantity(product.getQuantity() + cartItem.getQuantity()); // Restore stock
+                productRepository.save(product); // Save updated product stock
+                return true; // Remove the item from the cart
+            }
+            return false;
         });
 
         if (!removed) {
@@ -470,6 +267,4 @@ public class CartService {
     }
 
 
-
 }
-

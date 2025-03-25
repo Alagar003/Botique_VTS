@@ -17,6 +17,7 @@ public interface CartMapper {
     @Mapping(target = "cartItems", source = "items") // Map items to cartItems
     CartDTO toDTO(Cart cart);
 
+
     @Mapping(target = "id", source = "id", qualifiedByName = "stringToObjectId")
     @Mapping(target = "userId", source = "userId", qualifiedByName = "stringToObjectId")
     @Mapping(target = "items", source = "cartItems") // Map cartItems to items

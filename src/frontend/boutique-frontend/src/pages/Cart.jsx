@@ -53,20 +53,24 @@ const Cart = () => {
 
             console.log("🛒 Cart API Response:", response.data);
 
-            if (!response.data.items || response.data.items.length === 0) {
+            // Adjust based on response structure
+            const items = response.data.items || response.data.cartItems || [];
+
+            if (!items.length) {
                 console.error("⚠️ No items found in cart.");
                 setCart([]);
             } else {
-                response.data.items.forEach(item => {
-                    console.log(`📦 Product: ${item.product?.name}, 🆔 Product ID: ${item.product?.id}`);
+                items.forEach(item => {
+                    console.log(`📦 Product Name: ${item.product?.name || item.productName}, 🆔 Product ID: ${item.product?.id || item.productId}`);
                 });
-                setCart(response.data.items);
+                setCart(items);
             }
         } catch (error) {
             console.error("❌ Error fetching cart data:", error.response?.data || error.message);
             setCart([]);
         }
     };
+
 
 
 
@@ -81,8 +85,8 @@ const Cart = () => {
             console.log("🔍 Updating cart - User ID:", user.id, "Product ID:", productId, "Action:", action);
 
             const response = await axios.put(
-                "http://localhost:8081/api/cart/updateQuantity",
-                { userId: user.id, productId, action },
+                `http://localhost:8081/api/cart/${user.id}/items/${productId}?action=${action}`,
+                {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 

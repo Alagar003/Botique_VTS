@@ -10,7 +10,6 @@ const Layout = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch user details if logged in
         const fetchUserDetails = async () => {
             const token = localStorage.getItem("token");
             if (token) {
@@ -22,7 +21,7 @@ const Layout = () => {
                     });
                     if (response.ok) {
                         const data = await response.json();
-                        setUser(data); // Set user details
+                        setUser(data); // Update user state
                     } else {
                         console.error("Failed to fetch user details");
                     }
@@ -33,7 +32,8 @@ const Layout = () => {
         };
 
         fetchUserDetails();
-    }, []);
+    }, [localStorage.getItem("token")]); // Re-run when token changes
+
 
     const handleLogout = () => {
         localStorage.removeItem("token"); // Clear token
@@ -61,6 +61,16 @@ const Layout = () => {
         }
 
     };
+    const handleUserIconClick = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Please log in to access the dashboard.");
+            navigate("/login");
+        } else {
+            navigate("/dashboard"); // Navigate to the dashboard if user is logged in
+        }
+    };
+
 
 
     return (
@@ -87,16 +97,16 @@ const Layout = () => {
             <nav className="navbar">
                 <div className="navbar-container">
                     <ul className="menu">
-                        <div className="icons">
+                        <div className=" menu icons">
                             <li><Link to="/">Home</Link></li>
-                            <li onClick={() => handleProtectedNavigation("/products/women")}>Women</li>
-                            <li onClick={() => handleProtectedNavigation("/products/men")}>Men</li>
-                            <li onClick={() => handleProtectedNavigation("/products/boys")}>Boys</li>
-                            <li onClick={() => handleProtectedNavigation("/products/girls")}>Girls</li>
+                            <li className="nav-item" onClick={() => handleProtectedNavigation("/products/women")}>Women</li>
+                            <li  className="nav-item" onClick={() => handleProtectedNavigation("/products/men")}>Men</li>
+                            <li  className="nav-item" onClick={() => handleProtectedNavigation("/products/boys")}>Boys</li>
+                            <li  className="nav-item" onClick={() => handleProtectedNavigation("/products/girls")}>Girls</li>
                             <li><Link to="/support">Support</Link></li>
                             <li><Link to="/about">About Us</Link></li>
                             <li><Link to="/lookbooks">Look Books</Link></li>
-                            <div className="search-bar">
+                                <div className="search-bar">
                                 <input
                                     type="text"
                                     value={searchQuery}
@@ -106,18 +116,14 @@ const Layout = () => {
                                 />
                                 <button onClick={handleSearch} className="search-button">Search</button>
                             </div>
-
                             {/* User Icon */}
                             <div className="user-section">
-                                <div
-                                    className="icon user"
-                                    onClick={() => setShowDropdown(!showDropdown)}
-                                >
-                                    👤
+                                <div className="icon user" onClick={handleUserIconClick}>👤
                                 </div>
                                 {showDropdown && user && (
                                     <div className="dropdown-menu">
                                         <p><b>Email:</b> {user.email}</p>
+                                        <button onClick={handleLogout}>Sign Out</button>
                                     </div>
                                 )}
                             </div>
@@ -128,6 +134,15 @@ const Layout = () => {
                                     🛒 Cart
                                 </Link>
                             </li>
+
+
+                            {/* ✅ Show "Edit Products" only for Admins */}
+                            {user?.role === "ADMIN" && (
+                                <li>
+                                    <Link to="/product" className="edit-products">🛠 Edit Products</Link>
+                                </li>
+                            )}
+
 
                             {/* Sign-Out Link */}
                             <li>

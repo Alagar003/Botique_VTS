@@ -1,0 +1,84 @@
+/* profile.css */
+
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif; /* Set a default font for the body */
+    background-color: #f4f4f4; /* Light background color */
+    margin: 0;
+    padding: 0;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    max-width: 900px; /* Maximum width for the dashboard */
+    margin: 20px auto; /* Center the dashboard */
+    padding: 20px; /* Padding around the dashboard */
+    background: #fff; /* White background for the dashboard */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Heading Styles */
+.dashboard-container h2 {
+    text-align: center; /* Center the heading */
+    color: #333; /* Dark text color */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+/* User Info Styles */
+.user-info {
+    margin: 20px 0; /* Margin around user info */
+    padding: 15px; /* Padding inside user info */
+    background: #f9f9f9; /* Light background for user info */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Loading Spinner Styles */
+.spinner {
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center the spinner */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full viewport height */
+    font-size: 24px; /* Font size for loading text */
+    color: #007bff; /* Color for loading text */
+}
+
+/* Error Message Styles */
+.error-message {
+    color: #dc3545; /* Red color for error messages */
+    text-align: center; /* Center the error message */
+    margin-top: 20px; /* Space above the error message */
+}
+
+/* Button Styles */
+button {
+    padding: 10px 15px; /* Padding inside buttons */
+    margin-top: 10px; /* Space above buttons */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size for button text */
+    background-color: #28a745; /* Green background for buttons */
+    color: white; /* White text color */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px; /* Adjust padding for smaller screens */
+    }
+
+    .spinner {
+        font-size: 20px; /* Adjust font size for loading text */
+    }
+
+    button {
+        width: 100%; /* Full width for buttons on smaller screens */
+    }
+}

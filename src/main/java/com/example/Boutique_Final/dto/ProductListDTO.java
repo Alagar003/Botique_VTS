@@ -10,18 +10,20 @@ public class ProductListDTO {
     private double price;
     private int quantity;
     private String image;
+    private String category;
 
     // No-argument constructor (required for serialization/deserialization)
     public ProductListDTO() {}
 
     // Constructor with parameters
-    public ProductListDTO(String id, String name, String description, double price, int quantity, String image) {
+    public ProductListDTO(String id, String name, String description, double price, int quantity, String image, String category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
         this.image = image;
+        this.category = category;
     }
 
     // Getters and setters
@@ -42,4 +44,12 @@ public class ProductListDTO {
 
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

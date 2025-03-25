@@ -12,7 +12,6 @@ import NotFound from "./pages/NotFound";
 import Cart from "./pages/Cart";
 import Dashboard from "./pages/Profile";
 import AboutUs from "./pages/About";
-// import BottomLayout from "./Components/NavBar";
 import OrderPage from "./pages/OrderDetails";
 import OrderList from "./pages/OrderList"
 import ProductManagement from "./pages/ProductManagement";
@@ -38,7 +37,11 @@ const App = () => {
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/order-details" element={<OrderPage />} />
                         <Route path="/order-list" element={<OrderList />} />
-                        <Route path="/product" element={<ProductManagement />} />
+
+                        <Route path="/product" element={<ProductManagement />} >
+                            <Route index element={<ProductManagement />} />
+                        </Route>
+
                     </Route>
                 </Routes>
             </Router>

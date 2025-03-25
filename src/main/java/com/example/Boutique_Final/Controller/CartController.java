@@ -580,60 +580,31 @@ public class CartController {
         return ResponseEntity.ok(Map.of("items", items));
     }
 
+    @PutMapping("/{userId}/items/{productId}")
+    public ResponseEntity<ApiResponse> updateItemQuantity(@PathVariable String userId, @PathVariable String productId, @RequestParam String action) {
+        logger.info("🔄 Received request to update cart item - User ID: {}, Product ID: {}, Action: {}", userId, productId, action);
 
-    @PutMapping("/updateQuantity")
-    public ResponseEntity<?> updateCart(@RequestBody Map<String, Object> requestBody,
-                                        @AuthenticationPrincipal UserDetails userDetails) {
-        String userIdStr = (String) requestBody.get("userId");
-        String productIdStr = (String) requestBody.get("productId");
-        String action = (String) requestBody.get("action");
+        // Validate action parameter
+        if (!action.equals("increase") && !action.equals("decrease")) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Invalid action. Must be 'increase' or 'decrease'.", null));
+        }
 
-        logger.debug("📝 Received request - User ID: {}, Product ID: {}, Action: {}", userIdStr, productIdStr, action);
-
-        ObjectId userId;
         try {
-            userId = new ObjectId(userIdStr); // Convert String to ObjectId
+            // Call the service method to update the cart
+            CartDTO updatedCart = cartService.updateItemQuantity(userId, productId, action);
+            return ResponseEntity.ok(new ApiResponse(true, "Cart updated successfully", updatedCart));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid User ID format");
+            logger.error("❌ Invalid request: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage(), null));
+        } catch (ResourceNotFoundException e) {
+            logger.error("🛑 Resource not found: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, e.getMessage(), null));
+        } catch (Exception e) {
+            logger.error("⚠️ Unexpected error occurred: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "An unexpected error occurred. Please try again.", null));
         }
-
-        // Fetch or create a new cart
-        Cart cart = cartRepository.findByUserId(userId).orElseGet(() -> {
-            logger.debug("🛑 No cart found for userId: {}, creating a new cart.", userId);
-            return new Cart(userId); // Use the correct constructor
-        });
-
-        // Fetch product from the database
-        // Fetch product from the database (assuming product ID is stored as String)
-        Product product = productRepository.findById(productIdStr)
-                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productIdStr));
-
-        // Find if the product already exists in the cart
-        Optional<CartItem> cartItemOpt = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(product.getId()))
-                .findFirst();
-
-        if (cartItemOpt.isPresent()) {
-            CartItem cartItem = cartItemOpt.get();
-            if ("increase".equals(action)) {
-                cartItem.setQuantity(cartItem.getQuantity() + 1);
-            } else if ("decrease".equals(action) && cartItem.getQuantity() > 1) {
-                cartItem.setQuantity(cartItem.getQuantity() - 1);
-            }
-        } else {
-            logger.debug("🆕 Adding new product to cart.");
-            cart.getItems().add(new CartItem(product, 1)); // Now pass a Product object
-        }
-
-        // Recalculate total price
-        cart.calculateTotalPrice();
-
-        // Save updated cart
-        cartRepository.save(cart);
-        return ResponseEntity.ok(cart);
     }
-
-
 
     @DeleteMapping("/remove/{productId}")
     public ResponseEntity<?> removeProductFromCart(@PathVariable String productId, @AuthenticationPrincipal UserDetails userDetails) {

@@ -1,0 +1,254 @@
+/*!* AdminProductManagement.css *!*/
+
+/*.admin-container {*/
+/*    padding: 20px;*/
+/*    max-width: 900px;*/
+/*    margin: auto;*/
+/*    background: #f9f9f9;*/
+/*    border-radius: 8px;*/
+/*    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.admin-container h2 {*/
+/*    text-align: center;*/
+/*    color: #333;*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+/*.product-form {*/
+/*    background: white;*/
+/*    padding: 15px;*/
+/*    border-radius: 8px;*/
+/*    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+/*.product-form h3 {*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.product-form input {*/
+/*    width: 100%;*/
+/*    padding: 8px;*/
+/*    margin: 8px 0;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 4px;*/
+/*}*/
+
+/*.product-form button {*/
+/*    padding: 10px 15px;*/
+/*    margin-right: 10px;*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.product-form button:first-of-type {*/
+/*    background: #28a745;*/
+/*    color: white;*/
+/*}*/
+
+/*.product-form button:last-of-type {*/
+/*    background:deeppink;*/
+/*    color: white;*/
+/*}*/
+
+/*.product-table {*/
+/*    width: 100%;*/
+/*    border-collapse: collapse;*/
+/*    background: white;*/
+/*    border-radius: 8px;*/
+/*    overflow: hidden;*/
+/*    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.product-table th, .product-table td {*/
+/*    padding: 12px;*/
+/*    text-align: left;*/
+/*    border-bottom: 1px solid #ddd;*/
+/*}*/
+
+/*.product-table th {*/
+/*    background: #007bff;*/
+/*    color: white;*/
+/*}*/
+
+/*.product-table img {*/
+/*    width: 50px;*/
+/*    height: auto;*/
+/*    border-radius: 4px;*/
+/*}*/
+
+/*.product-actions button {*/
+/*    margin-right: 5px;*/
+/*    padding: 8px 10px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    border-radius: 4px;*/
+/*}*/
+
+/*.product-actions .edit {*/
+/*    background: greenyellow;*/
+/*    color: white;*/
+/*}*/
+
+/*.product-actions .delete {*/
+/*    background: #dc3545;*/
+/*    color: white;*/
+/*}*/
+
+
+
+/* AdminProductManagement.css */
+
+/* AdminProductManagement.css */
+
+.admin-container {
+    padding: 20px;
+    max-width: 900px; /* Maximum width for larger screens */
+    margin: auto;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.product-form {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.product-form h3 {
+    margin-bottom: 10px;
+}
+
+.product-form input {
+    width: 100%; /* Full width for responsiveness */
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.product-form button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.product-form button:first-of-type {
+    background: #28a745;
+    color: white;
+}
+
+.product-form button:last-of-type {
+    background: deeppink;
+    color: white;
+}
+
+.product-table {
+    width: 100%; /* Full width for responsiveness */
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-table th, .product-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.product-table th {
+    background: #007bff;
+    color: white;
+}
+
+.product-table img {
+    width: 50px;
+    height: auto;
+    border-radius: 4px;
+}
+
+.product-actions button {
+    margin-right: 5px;
+    padding: 8px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.product-actions .edit {
+    background: greenyellow;
+    color: white;
+}
+
+.product-actions .delete {
+    background: #dc3545;
+    color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .admin-container {
+        padding: 15px; /* Adjust padding for smaller screens */
+    }
+
+    .product-form {
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+
+    .product-form input {
+        padding: 10px; /* Adjust input padding */
+    }
+
+    .product-table th, .product-table td {
+        padding: 10px; /* Adjust padding for table cells */
+    }
+
+    .product-table img {
+        width: 40px; /* Adjust image size for smaller screens */
+    }
+
+    .product-actions button {
+        padding: 6px 8px; /* Adjust button padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-container {
+        padding: 10px; /* Further adjust padding */
+    }
+
+    .product-form h3 {
+        font-size: 1.5em; /* Adjust heading size */
+    }
+
+    .product-form input {
+        font-size: 14px; /* Adjust input font size */
+    }
+
+    .product-form button {
+        font-size: 14px; /* Adjust button font size */
+    }
+
+    .product-table th, .product-table td {
+        font-size: 14px; /* Adjust table font size */
+    }
+
+    .product-actions button {
+        font-size: 12px; /* Adjust button font size for smaller screens */
+    }
+}
