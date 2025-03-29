@@ -15,7 +15,10 @@ import AboutUs from "./pages/About";
 import OrderPage from "./pages/OrderDetails";
 import OrderList from "./pages/OrderList"
 import ProductManagement from "./pages/ProductManagement";
-
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
+import UserList from "./pages/Admin";
+import Admin from "./pages/Admin";
 const App = () => {
     return (
         <CartProvider> {/* ✅ Wrap everything in CartProvider */}
@@ -37,6 +40,9 @@ const App = () => {
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/order-details" element={<OrderPage />} />
                         <Route path="/order-list" element={<OrderList />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/orders" element={<Orders />} />
+                        <Route path="/admin" element={<UserList />} />
 
                         <Route path="/product" element={<ProductManagement />} >
                             <Route index element={<ProductManagement />} />

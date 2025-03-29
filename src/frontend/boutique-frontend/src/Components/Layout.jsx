@@ -12,6 +12,7 @@ const Layout = () => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             const token = localStorage.getItem("token");
+            console.log("Token:", token); // Log the token for debugging
             if (token) {
                 try {
                     const response = await fetch("http://localhost:8081/api/users/user", {
@@ -21,13 +22,16 @@ const Layout = () => {
                     });
                     if (response.ok) {
                         const data = await response.json();
-                        setUser(data); // Update user state
+                        setUser (data); // Update user state
                     } else {
-                        console.error("Failed to fetch user details");
+                        console.error("Failed to fetch user details, status:", response.status);
+                        alert("Failed to fetch user details. Please check your permissions.");
                     }
                 } catch (error) {
                     console.error("Error fetching user details:", error);
                 }
+            } else {
+                console.error("No token found. Please log in.");
             }
         };
 
@@ -99,14 +103,19 @@ const Layout = () => {
                     <ul className="menu">
                         <div className=" menu icons">
                             <li><Link to="/">Home</Link></li>
-                            <li className="nav-item" onClick={() => handleProtectedNavigation("/products/women")}>Women</li>
-                            <li  className="nav-item" onClick={() => handleProtectedNavigation("/products/men")}>Men</li>
-                            <li  className="nav-item" onClick={() => handleProtectedNavigation("/products/boys")}>Boys</li>
-                            <li  className="nav-item" onClick={() => handleProtectedNavigation("/products/girls")}>Girls</li>
+                            <li className="nav-item"
+                                onClick={() => handleProtectedNavigation("/products/women")}>Women
+                            </li>
+                            <li className="nav-item" onClick={() => handleProtectedNavigation("/products/men")}>Men</li>
+                            <li className="nav-item" onClick={() => handleProtectedNavigation("/products/boys")}>Boys
+                            </li>
+                            <li className="nav-item"
+                                onClick={() => handleProtectedNavigation("/products/girls")}>Girls
+                            </li>
                             <li><Link to="/support">Support</Link></li>
                             <li><Link to="/about">About Us</Link></li>
                             <li><Link to="/lookbooks">Look Books</Link></li>
-                                <div className="search-bar">
+                            <div className="search-bar">
                                 <input
                                     type="text"
                                     value={searchQuery}
@@ -129,11 +138,10 @@ const Layout = () => {
                             </div>
 
                             {/* Cart Link */}
-                            <li>
-                                <Link to="/cart" className="icon cart">
-                                    🛒 Cart
-                                </Link>
-                            </li>
+                            <li> <Link to="/cart" className="icon cart">
+                                🛒 Cart
+                            </Link></li>
+                            <li><Link to="/orders">Orders</Link></li>
 
 
                             {/* ✅ Show "Edit Products" only for Admins */}

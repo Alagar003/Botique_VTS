@@ -23,19 +23,26 @@ export const CartProvider = ({ children }) => {
             setLoading(false);
         }
     }, [token]);
-
     const fetchUserDetails = async () => {
+        const token = localStorage.getItem("token"); // Ensure token is stored properly
+        if (!token) {
+            console.error("❌ No token found!");
+            setError("Authentication token is missing.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const response = await fetch("http://localhost:8081/api/users/user", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`, // Ensure correct format
                 },
             });
 
             if (!response.ok) {
-                throw new Error("Failed to fetch user details");
+                throw new Error(`Failed to fetch user details, status: ${response.status}`);
             }
 
             const data = await response.json();
@@ -43,11 +50,14 @@ export const CartProvider = ({ children }) => {
                 throw new Error("User ID is missing in API response!");
             }
 
-            console.log("User details fetched:", data);  // Log user data
+            console.log("✅ User details fetched:", data);
             setUser(data);
-            setUserId(data.id);  // Ensure userId is set correctly
-            await fetchCartDetails(data.id, token);
-            setUserId(data.id); // Ensure it’s set after fetching
+            setUserId(data.id);
+
+            // Fetch cart details only if userId exists
+            if (data.id) {
+                await fetchCartDetails(data.id, token);
+            }
 
         } catch (error) {
             console.error("❌ Error fetching user:", error);
@@ -56,6 +66,7 @@ export const CartProvider = ({ children }) => {
             setLoading(false);
         }
     };
+
 
     const fetchCartDetails = async () => {
         const storedUser = localStorage.getItem("user");
@@ -117,8 +128,6 @@ export const CartProvider = ({ children }) => {
             setError(error.message);
         }
     };
-
-
     return (
         <CartContext.Provider value={{ cart, setCart, loading, error, user, userId, handleAddToCart }}>
             {children}

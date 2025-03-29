@@ -1,5 +1,3 @@
-
-
 package com.example.Boutique_Final.service;
 import com.example.Boutique_Final.Mapper.CartMapper;
 import com.example.Boutique_Final.dto.CartDTO;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -62,17 +61,14 @@ public class CartService {
     }
 
 
-
-
-
-    private Cart createNewCartForUser (String userId) {
+    private Cart createNewCartForUser(String userId) {
         // Fetch the user from the database using the userId
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User  not found for ID: " + userId));
 
         // Create a new cart and set the user
         Cart newCart = new Cart();
-        newCart.setUser (user); // Set the User object, not just the userId
+        newCart.setUser(user); // Set the User object, not just the userId
 
         return cartRepository.save(newCart); // Save the new cart to the database
     }
@@ -97,7 +93,7 @@ public class CartService {
 
         // Find or create a cart for the user
         Cart cart = cartRepository.findByUserId(userObjectId)
-                .orElseGet(() -> createNewCartForUser (userObjectId));
+                .orElseGet(() -> createNewCartForUser(userObjectId));
 
         // Add product to cart
         cart.addItem(product, quantity);
@@ -113,7 +109,6 @@ public class CartService {
     }
 
 
-
     // Method to create a new cart for the user
     private Cart createNewCartForUser(ObjectId userId) {
         User user = userRepository.findById(userId.toHexString())
@@ -127,14 +122,21 @@ public class CartService {
     }
 
 
-
-
-
-
-
-    public void clearCart(String userId) {
+    public void removeCartItems(String userId, List<String> productIds) {
         ObjectId userObjectId = new ObjectId(userId);
-        cartRepository.deleteByUserId(userObjectId);
+
+        List<ObjectId> productObjectIds = productIds.stream()
+                .map(ObjectId::new)
+                .collect(Collectors.toList());
+
+        Cart cart = cartRepository.findByUserId(userObjectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user: " + userId));
+
+        // Remove only the selected products
+        cart.getItems().removeIf(item -> productObjectIds.contains(item.getProduct().getId()));
+
+        cart.calculateTotalPrice(); // ✅ Recalculate total price
+        cartRepository.save(cart);  // ✅ Save updated cart
     }
 
 
@@ -148,10 +150,8 @@ public class CartService {
     }
 
 
-
     @Autowired
     private MongoTemplate mongoTemplate;
-
 
 
     public CartDTO updateItemQuantity(String userId, String productId, String action) {
@@ -214,13 +214,64 @@ public class CartService {
     }
 
 
+//    public boolean removeProductFromCart(String email, String productId) {
+//        // Find user by email
+//        User user = userRepository.findByEmail(email).orElse(null);
+//        if (user == null) {
+//            logger.error("User  not found with email: {}", email);
+//            return false;
+//        }
+//
+//        // Fetch cart using user ID
+//        Optional<Cart> cartOptional = cartRepository.findByUserId(user.getId());
+//        if (cartOptional.isEmpty()) {
+//            logger.error("Cart not found for user with ID: {}", user.getId());
+//            return false; // Cart not found
+//        }
+//
+//        Cart cart = cartOptional.get();
+//        logger.info("Cart fetched for user {}: {}", user.getId(), cart.getItems().size());
+//
+//        // Convert productId to ObjectId
+//        ObjectId productObjectId;
+//        try {
+//            productObjectId = new ObjectId(productId);
+//        } catch (IllegalArgumentException e) {
+//            logger.error("Invalid product ID format: {}", productId);
+//            return false; // Invalid product ID format
+//        }
+//
+//        // Remove product from cart and update stock
+//        boolean removed = cart.getItems().removeIf(cartItem -> {
+//            ObjectId cartProductId = cartItem.getProduct().getId();
+//            if (cartProductId != null && cartProductId.equals(productObjectId)) {
+//                // Increase stock of the product
+//                Product product = cartItem.getProduct();
+//                product.setQuantity(product.getQuantity() + cartItem.getQuantity()); // Restore stock
+//                productRepository.save(product); // Save updated product stock
+//                return true; // Remove the item from the cart
+//            }
+//            return false;
+//        });
+//
+//        if (!removed) {
+//            logger.warn("Product with ID {} not found in cart.", productId);
+//            return false; // Product not found in cart
+//        }
+//
+//        cartRepository.save(cart); // Save updated cart
+//        logger.info("Product removed from cart successfully.");
+//        return true;
+//    }
 
 
     public boolean removeProductFromCart(String email, String productId) {
+        logger.info("Removing product with ID {} from cart for user with email: {}", productId, email);
+
         // Find user by email
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
-            logger.error("User  not found with email: {}", email);
+            logger.error("User not found with email: {}", email);
             return false;
         }
 
@@ -228,11 +279,11 @@ public class CartService {
         Optional<Cart> cartOptional = cartRepository.findByUserId(user.getId());
         if (cartOptional.isEmpty()) {
             logger.error("Cart not found for user with ID: {}", user.getId());
-            return false; // Cart not found
+            return false;
         }
 
         Cart cart = cartOptional.get();
-        logger.info("Cart fetched for user {}: {}", user.getId(), cart.getItems().size());
+        logger.info("Cart fetched for user {}: {} items", user.getId(), cart.getItems().size());
 
         // Convert productId to ObjectId
         ObjectId productObjectId;
@@ -240,31 +291,84 @@ public class CartService {
             productObjectId = new ObjectId(productId);
         } catch (IllegalArgumentException e) {
             logger.error("Invalid product ID format: {}", productId);
-            return false; // Invalid product ID format
+            return false;
         }
 
         // Remove product from cart and update stock
         boolean removed = cart.getItems().removeIf(cartItem -> {
             ObjectId cartProductId = cartItem.getProduct().getId();
             if (cartProductId != null && cartProductId.equals(productObjectId)) {
-                // Increase stock of the product
                 Product product = cartItem.getProduct();
-                product.setQuantity(product.getQuantity() + cartItem.getQuantity()); // Restore stock
-                productRepository.save(product); // Save updated product stock
-                return true; // Remove the item from the cart
+                logger.info("Restoring stock for product ID {} by {}", product.getId(), cartItem.getQuantity());
+                product.setQuantity(product.getQuantity() + cartItem.getQuantity());
+                productRepository.save(product);
+                return true;
             }
             return false;
         });
 
         if (!removed) {
             logger.warn("Product with ID {} not found in cart.", productId);
-            return false; // Product not found in cart
+            return false;
         }
 
-        cartRepository.save(cart); // Save updated cart
-        logger.info("Product removed from cart successfully.");
+        // Save updated cart or delete it if empty
+        if (cart.getItems().isEmpty()) {
+            cartRepository.delete(cart);
+            logger.info("Cart is now empty and has been deleted for user {}", user.getId());
+        } else {
+            cartRepository.save(cart);
+            logger.info("Cart updated successfully for user {}.", user.getId());
+        }
+
         return true;
     }
 
+
+
+//    public void removeItemsFromCart(String userId, List<String> productIds) {
+//        ObjectId objectUserId = new ObjectId(userId);  // Convert userId to ObjectId
+//
+//        Cart cart = cartRepository.findByUserId(objectUserId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Cart not found"));
+//
+//        // Convert productId Strings to ObjectId
+//        List<ObjectId> objectIdList = productIds.stream()
+//                .map(ObjectId::new)
+//                .collect(Collectors.toList());
+//
+//        // Remove items whose productId matches
+//        List<CartItem> updatedItems = cart.getItems().stream()
+//                .filter(item -> !objectIdList.contains(item.getProductId()))
+//                .collect(Collectors.toList());
+//
+//        cart.setItems(updatedItems);
+//        cartRepository.save(cart);
+//    }
+
+
+    public boolean removeItems(String userId, List<String> productIds) {
+        Optional<Cart> cartOptional = cartRepository.findByUserId(new ObjectId(userId));
+        if (cartOptional.isEmpty()) {
+            logger.error("Cart not found for user ID: {}", userId);
+            return false;
+        }
+
+        Cart cart = cartOptional.get();
+        logger.info("Cart before removal: {}", cart.getItems());
+
+        // Remove items
+        cart.getItems().removeIf(cartItem -> productIds.contains(cartItem.getProduct().getId().toHexString()));
+
+        if (cart.getItems().isEmpty()) {
+            cartRepository.delete(cart); // Delete cart if empty
+            logger.info("Cart deleted for user ID: {}", userId);
+        } else {
+            cartRepository.save(cart); // Save updated cart
+            logger.info("Updated cart saved for user ID: {}", userId);
+        }
+
+        return true;
+    }
 
 }

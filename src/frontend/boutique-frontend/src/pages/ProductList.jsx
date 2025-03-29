@@ -80,7 +80,6 @@ const ProductList = () => {
                                 disabled={isAdding} // Disable button while processing
                                 onClick={async () => {
                                     if (typeof handleAddToCart === "function") {
-                                        setIsAdding(true); // Prevent multiple clicks
                                         await handleAddToCart(product.id, 1);
                                         setIsAdding(false);
                                     } else {
