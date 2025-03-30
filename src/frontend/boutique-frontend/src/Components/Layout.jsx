@@ -149,6 +149,14 @@ const Layout = () => {
                                 <li>
                                     <Link to="/product" className="edit-products">🛠 Edit Products</Link>
                                 </li>
+
+                            )}
+
+                            {user?.role === "ADMIN" && (
+                                <li>
+                                    <Link to="/admin" >View Details</Link>
+                                </li>
+
                             )}
 
 

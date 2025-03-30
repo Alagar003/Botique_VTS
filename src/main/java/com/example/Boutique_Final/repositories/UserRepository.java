@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
-    // 🟢 Find user by email
+    // 🟢 Find user by email (ensure case-insensitive search)
     Optional<User> findByEmail(String email);
 
     Optional<User> findById(ObjectId id);
@@ -21,8 +21,5 @@ public interface UserRepository extends MongoRepository<User, String> {
     // 🟢 Check if email already exists
     boolean existsByEmail(String email);
 
-
-
-
-
+    Optional<User> findByUsername(String username);
 }

@@ -1,112 +1,102 @@
-// JwtService.java
-package com.example.Boutique_Final.service;
-
+package com.example.Boutique_Final.service;//// JwtService.java
+import com.example.Boutique_Final.model.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
+
+import static javax.crypto.Cipher.SECRET_KEY;
 
 @Service
 public class JwtService {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
-
-    @Value("${jwt.secret:default-secret}")
-    private String secretKey;
+    private String secretKey = "your-secret-key";
 
     @Value("${jwt.expiration}")
     private long jwtExpirationInMillis;
 
-    @PostConstruct
-    public void init() {
-        if (secretKey == null || secretKey.equals("default-secret")) {
-            logger.error("Secret key not injected or fallback value is being used!");
-        } else {
-            logger.info("JwtService initialized with secret key");
-        }
-    }
+    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
 
-    public String generateToken(String username, String role) {
-        logger.info("Generating token for user: {} with role: {}", username, role);
+
+    public String generateToken(UserDetails userDetails) {
+        User user = (User) userDetails; // Assuming you have a User class
         return Jwts.builder()
-                .setSubject(username)
-                .claim("role", role)
+                .setSubject(user.getEmail())  // Keep email as subject
+                .claim("username", user.getUsername()) // 🔹 Add username as a claim
+                .claim("role", user.getRole())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMillis))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMillis)) // 10 hours
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-//    public boolean validateToken(String token, String username) {
-//        try {
-//            String extractedUsername = extractUsername(token);
-//            logger.info("Validating token for user: {}", extractedUsername);
-//            return extractedUsername.equals(username) && !isTokenExpired(token);
-//        } catch (Exception e) {
-//            logger.error("Token validation error: {}", e.getMessage());
-//            return false;
-//        }
-//    }
 
 
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        try {
-            String extractedUsername = extractUsername(token);
-            String extractedRole = extractRole(token); // Extract role from token
 
-            logger.info("Validating token for user: {}, role: {}", extractedUsername, extractedRole);
-
-            return extractedUsername.equals(userDetails.getUsername())
-                    && !isTokenExpired(token);
-        } catch (Exception e) {
-            logger.error("Token validation error: {}", e.getMessage());
-            return false;
-        }
-    }
-
-    public String extractRole(String token) {
-        return extractClaims(token, claims -> claims.get("role", String.class));
-    }
 
 
 
     public String extractUsername(String token) {
         try {
-            logger.info("Decoding token");
-            return extractClaims(token, Claims::getSubject);
+            String username = extractClaims(token, Claims::getSubject);
+            log.debug("✅ Extracted username from token: {}", username);
+            return username;
+        } catch (ExpiredJwtException e) {
+            log.error("⏳ Token expired: {}", e.getMessage());
+            throw e;
         } catch (Exception e) {
-            logger.error("Error extracting username: {}", e.getMessage());
+            log.error("❌ Failed to extract username: {}", e.getMessage());
             throw e;
         }
     }
 
-    private Claims extractAllClaims(String token) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            logger.error("Error parsing token: {}", e.getMessage());
-            throw e;
-        }
+
+
+
+
+    public String extractEmail(String token) {
+        return extractClaims(token, Claims::getSubject); // ✅ Extracts email correctly
     }
+
+
+
 
     public <T> T extractClaims(String token, Function<Claims, T> claimsResolver) {
-        Claims claims = extractAllClaims(token);
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
         return claimsResolver.apply(claims);
     }
 
-    private boolean isTokenExpired(String token) {
-        Date expirationDate = extractClaims(token, Claims::getExpiration);
-        return expirationDate.before(new Date());
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String extractedEmail = extractUsername(token);  // This is actually the email
+        log.debug("Extracted email: {}", extractedEmail);
+        log.debug("UserDetails email: {}", ((User) userDetails).getEmail());
+
+        return extractedEmail.equals(((User) userDetails).getEmail()) && !isTokenExpired(token);
     }
+
+
+
+
+
+
+    private boolean isTokenExpired(String token) {
+        Date expiration = extractClaims(token, Claims::getExpiration);
+        log.debug("Token expiration time: {}", expiration);
+        return expiration.before(new Date());
+    }
+
 }

@@ -12,6 +12,7 @@ export const CartProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
     // Fetch user and cart data when token changes
     useEffect(() => {
         console.log("Token is: ", token);  // Log token to inspect

@@ -1,9 +1,15 @@
 package com.example.Boutique_Final.Controller;
 
+import com.example.Boutique_Final.dto.OrderDTO;
 import com.example.Boutique_Final.dto.ProductDTO;
 import com.example.Boutique_Final.dto.ProductListDTO;
+import com.example.Boutique_Final.dto.UserDTO;
 import com.example.Boutique_Final.model.Product;
+import com.example.Boutique_Final.model.User;
+import com.example.Boutique_Final.repositories.UserRepository;
+import com.example.Boutique_Final.service.OrderService;
 import com.example.Boutique_Final.service.ProductService;
+import com.example.Boutique_Final.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,33 +25,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3005", allowCredentials = "true")
 public class AdminController {
     @Autowired
     private final ProductService productService;
+    private final UserService userService;
+    private final OrderService orderService;
     private static final Logger logger = LoggerFactory.getLogger(Product.class);
+    private final UserRepository userRepository;
 
 
-    public AdminController(ProductService productService) {
+    public AdminController(ProductService productService, UserService userService, OrderService orderService, UserRepository userRepository) {
         this.productService = productService;
+        this.userService = userService;
+        this.orderService = orderService;
+        this.userRepository = userRepository;
     }
-
-    // Get all products (Paginated and Sorted)
-//    @GetMapping
-//    public ResponseEntity<Page<ProductListDTO>> getAllProducts(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "name") String sortBy,
-//            @RequestParam(defaultValue = "asc") String sortDir) {
-//
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
-//        Page<ProductListDTO> products = productService.findAllWithoutComments(pageable);
-//        return new ResponseEntity<>(products, HttpStatus.OK);
-//    }
 
 
     @GetMapping("/category/{category}")
@@ -62,17 +62,6 @@ public class AdminController {
         List<ProductListDTO> products = productService.searchProducts(query);
         return ResponseEntity.ok(products);
     }
-
-
-    // Create a new product
-//    @PostMapping("/add")
-//    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
-//        ProductDTO createdProduct = productService.createProduct(productDTO).getBody();
-//        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-//    }
-
-
-//
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) {
@@ -125,7 +114,28 @@ public class AdminController {
         }
     }
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
+
+
+
+
+//    @GetMapping("/users")
+//    public ResponseEntity<List<UserDTO>> getAllUsers() {
+//        List<UserDTO> users = userService.getAllUsers();
+//        return ResponseEntity.ok(users);
+//    }
+
+
+    @GetMapping("/users")
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new UserDTO(user.getId().toHexString(), user.getUsername(), user.getEmail(), user.getRole().toString()))
+                .collect(Collectors.toList());
+    }
+
+
+
+    //    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<?> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -142,4 +152,12 @@ public class AdminController {
         return ResponseEntity.ok(products);
     }
 
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<OrderDTO> orders = orderService.getAllOrders(); // Fetch all orders
+        return new ResponseEntity<>(orders, HttpStatus.OK); // Return orders with HTTP 200 status
+    }
 }
+
+

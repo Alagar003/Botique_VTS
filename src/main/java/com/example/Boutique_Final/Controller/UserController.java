@@ -10,6 +10,9 @@ import io.jsonwebtoken.SignatureException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +23,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3005", allowCredentials = "true")
 public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
-
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     // Endpoint to get a user by ID
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable String id) {
@@ -63,14 +66,13 @@ public class UserController {
         }
 
         try {
-            String token = authHeader.substring(7); // Remove "Bearer " prefix
-            String email = jwtService.extractUsername(token);
+            String token = authHeader.substring(7);
+            String username = jwtService.extractUsername(token); // ✅ Extracting username
 
-            User user = userService.getUserByEmail(email);
+            User user = userService.getUserByUsername(username); // ✅ Fetching by username
             if (user != null) {
-                // Convert ObjectId to string
                 Map<String, Object> userResponse = new HashMap<>();
-                userResponse.put("id", user.getId().toString()); // Convert ObjectId to String
+                userResponse.put("id", user.getId().toString());
                 userResponse.put("name", user.getUsername());
                 userResponse.put("email", user.getEmail());
                 userResponse.put("role", user.getRole());
@@ -81,10 +83,6 @@ public class UserController {
             }
         } catch (ExpiredJwtException e) {
             return ResponseEntity.status(401).body("Token expired");
-        } catch (MalformedJwtException e) {
-            return ResponseEntity.status(401).body("Invalid token format");
-        } catch (SignatureException e) {
-            return ResponseEntity.status(401).body("Invalid token signature");
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Invalid or expired token");
         }
@@ -92,8 +90,9 @@ public class UserController {
 
 
 
-}
 
+
+}
 
 
 

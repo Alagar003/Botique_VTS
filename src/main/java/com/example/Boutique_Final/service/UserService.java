@@ -43,6 +43,9 @@ public class UserService {
     @Value("${admin.organization.password}")  // Inject organization password from properties
     private String organizationPassword;
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
+
 
 
 
@@ -220,4 +223,20 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
     }
+
+    public User getUserByUsername(String username) {
+        log.debug("🔍 Searching for user with username: {}", username);
+
+        List<User> allUsers = userRepository.findAll();
+        log.debug("📋 All users in DB: {}", allUsers);
+
+        Optional<User> user = userRepository.findByEmail(username); // Ensure it searches by email
+        if (user.isEmpty()) {
+            log.error("❌ User '{}' not found in the database!", username);
+        }
+        return user.orElse(null);
+    }
+
+
+
 }

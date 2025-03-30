@@ -3,47 +3,38 @@ package com.example.Boutique_Final.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static javax.crypto.Cipher.SECRET_KEY;
-
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret:default-secret}")
-    private static String secretKey;
+    private final String secretKey;
 
-    public static String extractUsername(String token) {
-        return extractClaims(token).getSubject();
+    // Injecting the secret key via constructor (fix for @Value on static field)
+    public JwtUtil(@Value("${jwt.secret}") String secretKey) {
+        this.secretKey = secretKey;
     }
 
-    // Extract expiration date from the token
-    public static Date extractExpiration(String token) {
+    public String extractUsername(String token) {
+        return extractClaims(token).getSubject();  // Make sure "sub" contains email when creating JWT
+    }
+
+    public Date extractExpiration(String token) {
         return extractClaims(token).getExpiration();
     }
 
-    // Extract custom claims (e.g., roles) from the token
-    public static String extractRole(String token) {
-        Claims claims = extractClaims(token);
-        return claims.get("role", String.class); // Assuming "role" is stored in the token
+    public String extractRole(String token) {
+        return extractClaims(token).get("role", String.class);
     }
 
-    public static boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token) {
         try {
-            // Check if token is expired
-            if (isTokenExpired(token)) {
-                throw new RuntimeException("Token has expired");
-            }
-
-            // Extract claims to ensure token is valid
-            extractClaims(token);
-            return true;
+            return !isTokenExpired(token);
         } catch (ExpiredJwtException e) {
             System.err.println("Expired token: " + e.getMessage());
         } catch (SignatureException e) {
@@ -54,18 +45,14 @@ public class JwtUtil {
         return false;
     }
 
-    // Check if the token is expired
-    public static boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public static Claims extractClaims(String token) {
-        System.out.println("Validating token with secret key: " + secretKey); // Debugging log
+    private Claims extractClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
     }
 }
-
-

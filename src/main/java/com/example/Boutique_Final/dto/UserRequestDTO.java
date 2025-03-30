@@ -19,4 +19,6 @@ public class UserRequestDTO {
     private Role role; // CUSTOMER or ADMIN
 
     private String organizationPassword; // Required only if role = ADMIN
+
+
 }
