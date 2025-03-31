@@ -21,7 +21,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3005", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "https://alagar003.github.io"}, allowCredentials = "true")
 @RequiredArgsConstructor
 public class AuthController {
 
