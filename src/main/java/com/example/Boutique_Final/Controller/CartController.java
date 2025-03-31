@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/cart")
-@CrossOrigin(origins = "http://localhost:3001")
+@CrossOrigin(origins = {"http://localhost:3000", "https://alagar003.github.io/Botique_VTS/"}, allowCredentials = "true")
 @RequiredArgsConstructor
 public class CartController {
 

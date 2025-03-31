@@ -22,7 +22,7 @@ const Cart = () => {
             }
 
             try {
-                const response = await axios.get("http://localhost:8081/api/users/user", {
+                const response = await axios.get("https://alagar003.github.io/Botique_VTS/users/user", {
                     headers: {Authorization: `Bearer ${token}`},
                 });
 
@@ -48,7 +48,7 @@ const Cart = () => {
 
     const fetchCart = async (userId, token) => {
         try {
-            const response = await axios.get(`http://localhost:8081/api/cart/${userId}`, {
+            const response = await axios.get(`https://alagar003.github.io/Botique_VTS/cart/${userId}`, {
                 headers: {Authorization: `Bearer ${token}`},
             });
 
@@ -84,7 +84,7 @@ const Cart = () => {
             console.log("🔍 Updating cart - User ID:", user.id, "Product ID:", productId, "Action:", action);
 
             const response = await axios.put(
-                `http://localhost:8081/api/cart/${user.id}/items/${productId}?action=${action}`,
+                `https://alagar003.github.io/Botique_VTS/cart/${user.id}/items/${productId}?action=${action}`,
                 {},
                 {headers: {Authorization: `Bearer ${token}`}}
             );
@@ -107,7 +107,7 @@ const Cart = () => {
             setCart(prevCart => prevCart.filter(item => item.product && item.product._id !== productId));
 
             // Call the backend to remove the item from the cart
-            const response = await axios.delete(`http://localhost:8081/api/cart/remove/${productId}`, {
+            const response = await axios.delete(`https://alagar003.github.io/Botique_VTS/cart/remove/${productId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },

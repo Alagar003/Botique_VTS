@@ -17,7 +17,7 @@ const Orders = () => {
             }
 
             try {
-                const userResponse = await fetch("http://localhost:8081/api/users/user", {
+                const userResponse = await fetch("https://alagar003.github.io/Botique_VTS/users/user", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -59,7 +59,7 @@ const Orders = () => {
             }
 
             try {
-                const response = await fetch(`http://localhost:8081/api/orders/user?userId=${user.id}`, {
+                const response = await fetch(`https://alagar003.github.io/Botique_VTS/orders/user?userId=${user.id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

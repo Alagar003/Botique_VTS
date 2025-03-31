@@ -25,7 +25,7 @@ const OrderList = () => {
 
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`http://localhost:8081/api/orders/user/${userId}`);
+                const response = await axios.get(`https://alagar003.github.io/Botique_VTS/orders/user/${userId}`);
                 console.log("Orders received:", response.data);
                 setOrders(response.data);
             } catch (err) {

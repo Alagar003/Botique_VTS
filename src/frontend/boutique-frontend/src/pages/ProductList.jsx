@@ -33,12 +33,12 @@ const ProductList = () => {
                 let response;
                 if (query) {
                     response = await axios.get(
-                        `http://localhost:8081/api/products/search?query=${query}`,
+                        `https://alagar003.github.io/Botique_VTS/products/search?query=${query}`,
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                 } else {
                     response = await axios.get(
-                        `http://localhost:8081/api/products/category/${category}`,
+                        `https://alagar003.github.io/Botique_VTS/products/category/${category}`,
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                 }

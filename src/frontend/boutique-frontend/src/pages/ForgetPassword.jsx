@@ -16,7 +16,7 @@ const ForgotPassword = () => {
         setMessage("");
         try {
             const response = await fetch(
-                "http://localhost:8081/api/auth/forgot-password",
+                "https://alagar003.github.io/Botique_VTS/auth/forgot-password",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -44,7 +44,7 @@ const ForgotPassword = () => {
         setMessage("");
         try {
             const response = await fetch(
-                "http://localhost:8081/api/auth/reset-password",
+                "https://alagar003.github.io/Botique_VTS/auth/reset-password",
                 {
                     method: "POST",
                     headers: {

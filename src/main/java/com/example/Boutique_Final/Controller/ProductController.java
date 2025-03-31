@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://alagar003.github.io/Botique_VTS/"}, allowCredentials = "true")
 public class ProductController {
 
     private final ProductService productService;

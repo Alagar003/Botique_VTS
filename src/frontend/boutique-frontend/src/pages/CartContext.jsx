@@ -34,7 +34,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            const response = await fetch("http://localhost:8081/api/users/user", {
+            const response = await fetch("https://alagar003.github.io/Botique_VTS/users/user", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -90,7 +90,7 @@ export const CartProvider = ({ children }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8081/api/cart/add`, {
+            const response = await fetch(`https://alagar003.github.io/Botique_VTS/cart/add`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

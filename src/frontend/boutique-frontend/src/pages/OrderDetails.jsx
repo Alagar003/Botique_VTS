@@ -28,7 +28,7 @@ const OrderDetails = () => {
         try {
             setOrdering(true);
 
-            const response = await axios.post("http://localhost:8081/api/orders/create", {
+            const response = await axios.post("https://alagar003.github.io/Botique_VTS/orders/create", {
                 userId: user.id,
                 address,
                 phoneNumber,

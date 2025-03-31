@@ -23,7 +23,7 @@ import java.security.Principal;
 import java.util.List;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://alagar003.github.io/Botique_VTS/"}, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor

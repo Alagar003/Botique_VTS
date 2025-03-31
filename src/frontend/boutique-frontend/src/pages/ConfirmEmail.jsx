@@ -13,7 +13,7 @@ const ConfirmEmail = () => {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:8081/api/auth/confirm-email', {
+            const response = await fetch('https://alagar003.github.io/Botique_VTS/auth/confirm-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

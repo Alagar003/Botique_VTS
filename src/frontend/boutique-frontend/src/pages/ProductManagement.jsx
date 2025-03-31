@@ -14,7 +14,7 @@ export default function ProductManagement() {
         category: "",
     });
 
-    const API_URL = "http://localhost:8081/api/products";
+    const API_URL = "https://alagar003.github.io/Botique_VTS/products";
 
     useEffect(() => {
         fetchProducts();

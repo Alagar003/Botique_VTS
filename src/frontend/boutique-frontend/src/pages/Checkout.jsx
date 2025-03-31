@@ -25,21 +25,21 @@ const Checkout = () => {
 
             try {
                 // Fetch user details
-                const userResponse = await axios.get("http://localhost:8081/api/users/user", {
+                const userResponse = await axios.get("https://alagar003.github.io/Botique_VTS/users/user", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 console.log("✅ Fetched user data:", userResponse.data);
                 setUser(userResponse.data); // Update user state
 
                 // Fetch cart details
-                const cartResponse = await axios.get(`http://localhost:8081/api/cart/${userResponse.data?.id}`, {
+                const cartResponse = await axios.get(`https://alagar003.github.io/Botique_VTS/cart/${userResponse.data?.id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 console.log("✅ Fetched cart data:", cartResponse.data?.items || []);
                 setCart(cartResponse.data?.items || []);
 
                 // Fetch orders for user
-                const ordersResponse = await axios.get(`http://localhost:8081/api/orders/user`, {
+                const ordersResponse = await axios.get(`https://alagar003.github.io/Botique_VTS/orders/user`, {
                     headers: { Authorization: `Bearer ${token}` },
                     params: { userId: userResponse.data?.id },
                 });
@@ -103,7 +103,7 @@ const Checkout = () => {
         try {
             console.log("⏳ Placing order...");
             const orderResponse = await axios.post(
-                "http://localhost:8081/api/orders/create",
+                "https://alagar003.github.io/Botique_VTS/orders/create",
                 {
                     user: { id: user.id },
                     address,
@@ -121,7 +121,7 @@ const Checkout = () => {
 
             // Remove items from the cart
             console.log("🛒 Removing items from cart...");
-            await axios.delete("http://localhost:8081/api/cart/remove", {
+            await axios.delete("https://alagar003.github.io/Botique_VTS/cart/remove", {
                 headers: { Authorization: `Bearer ${token}` },
                 data: {
                     userId: user.id,
@@ -131,7 +131,7 @@ const Checkout = () => {
             console.log("🛒 Cart items successfully removed.");
 
             // Refresh the cart
-            const updatedCartResponse = await axios.get(`http://localhost:8081/api/cart/${user.id}`, {
+            const updatedCartResponse = await axios.get(`https://alagar003.github.io/Botique_VTS/cart/${user.id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setCart(updatedCartResponse.data?.items || []);

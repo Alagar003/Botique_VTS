@@ -35,7 +35,7 @@ const AdminPage = () => {
                 }
 
 
-                const response = await axios.get("http://localhost:8081/api/admin/users", {
+                const response = await axios.get("https://alagar003.github.io/Botique_VTS/api/admin/users", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setUsers(response.data);
@@ -60,7 +60,7 @@ const AdminPage = () => {
             }
 
             try {
-                const response = await axios.get("http://localhost:8081/api/admin/orders", {
+                const response = await axios.get("https://alagar003.github.io/Botique_VTS/api/admin/orders", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setOrders(response.data);
