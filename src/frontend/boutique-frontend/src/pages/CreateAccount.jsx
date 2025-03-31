@@ -297,7 +297,7 @@ const CreateAccount = () => {
                             className="create-account"
                             onClick={(e) => {
                                 e.preventDefault();
-                                navigate('/home');
+                                navigate('/login');
                             }}
                         >
                             Cancel
