@@ -15,7 +15,7 @@ const Layout = () => {
             console.log("Token:", token); // Log the token for debugging
             if (token) {
                 try {
-                    const response = await fetch("http://localhost:8081/api/users/user", {
+                    const response = await fetch("https://alagar003.github.io/Botique_VTS/api/users/user", {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
