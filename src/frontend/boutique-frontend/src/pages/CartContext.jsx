@@ -7,25 +7,25 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState({ items: [], totalPrice: 0 });
     const [user, setUser] = useState(null);
-    const [userId, setUserId] = useState(localStorage.getItem("userId"));
+    const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-
-    // Fetch user and cart data when token changes
     useEffect(() => {
-        console.log("Token is: ", token);  // Log token to inspect
-        console.log(userId);
+        const storedUserId = localStorage.getItem("userId");
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+
         if (token) {
             fetchUserDetails();
         } else {
-            console.log("❌ Token is missing");
             setLoading(false);
         }
     }, [token]);
+
     const fetchUserDetails = async () => {
-        const token = localStorage.getItem("token"); // Ensure token is stored properly
         if (!token) {
             console.error("❌ No token found!");
             setError("Authentication token is missing.");
@@ -38,7 +38,7 @@ export const CartProvider = ({ children }) => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // Ensure correct format
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
@@ -54,12 +54,9 @@ export const CartProvider = ({ children }) => {
             console.log("✅ User details fetched:", data);
             setUser(data);
             setUserId(data.id);
+            localStorage.setItem("userId", data.id);
 
-            // Fetch cart details only if userId exists
-            if (data.id) {
-                await fetchCartDetails(data.id, token);
-            }
-
+            await fetchCartDetails(data.id, token);
         } catch (error) {
             console.error("❌ Error fetching user:", error);
             setError(error.message);
@@ -68,22 +65,9 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-
-    const fetchCartDetails = async () => {
-        const storedUser = localStorage.getItem("user");
-        if (!storedUser) {
-            console.warn("User not found in localStorage");
-            return;
-        }
-
-        const user = JSON.parse(storedUser);
-        if (!user.id) {
-            console.error("User ID is missing in localStorage");
-            return;
-        }
-
+    const fetchCartDetails = async (userId) => {
         try {
-            const response = await fetch(`/api/cart/${user.id}`);
+            const response = await fetch(`/api/cart/${userId}`);
             const cartData = await response.json();
 
             if (!cartData.userId) {
@@ -96,10 +80,12 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-
     const handleAddToCart = async (productId, quantity) => {
-        if (!userId || !token) {
-            console.error("❌ Cannot add to cart: Missing userId or token.");
+        const storedUserId = localStorage.getItem("userId"); // Ensure userId is retrieved
+        const storedToken = localStorage.getItem("token"); // Ensure token is retrieved
+
+        if (!storedUserId || !storedToken) {
+            alert("❌ You need to log in before adding to the cart.");
             return;
         }
 
@@ -108,9 +94,9 @@ export const CartProvider = ({ children }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${storedToken}`,
                 },
-                body: JSON.stringify({ userId, productId, quantity }),
+                body: JSON.stringify({ userId: storedUserId, productId, quantity }),
             });
 
             if (!response.ok) {
@@ -125,10 +111,11 @@ export const CartProvider = ({ children }) => {
             });
         } catch (error) {
             console.error("❌ Error adding to cart:", error);
-            alert("Stock Not Available or Invalid Product")
+            alert("Stock Not Available or Invalid Product");
             setError(error.message);
         }
     };
+
     return (
         <CartContext.Provider value={{ cart, setCart, loading, error, user, userId, handleAddToCart }}>
             {children}
@@ -143,121 +130,3 @@ export const useCart = () => {
     }
     return context;
 };
-
-// import React, { createContext, useState, useEffect, useContext } from "react";
-//
-// export const CartContext = createContext();
-//
-// export const CartProvider = ({ children }) => {
-//     const [cart, setCart] = useState({ items: [], totalPrice: 0 });
-//     const [user, setUser] = useState(null);
-//     const [userId, setUserId] = useState(null);
-//     const [token, setToken] = useState(localStorage.getItem("token") || null);
-//     const [loading, setLoading] = useState(true);
-//     const [error, setError] = useState(null);
-//
-//     // Fetch user details when token changes
-//     useEffect(() => {
-//         if (token) {
-//             fetchUserDetails();
-//         } else {
-//             setLoading(false);
-//         }
-//     }, [token]);
-//
-//     const fetchUserDetails = async () => {
-//         try {
-//             const response = await fetch("http://localhost:8081/api/users/user", {
-//                 method: "GET",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             });
-//
-//             if (!response.ok) {
-//                 throw new Error("Failed to fetch user details");
-//             }
-//
-//             const data = await response.json();
-//             setUser(data);
-//             setUserId(data.id);
-//             fetchCartDetails(data.id, token);
-//         } catch (error) {
-//             console.error("Error fetching user:", error);
-//             setError(error.message);
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-//
-//     const fetchCartDetails = async (userId, token) => {
-//         if (!userId || !token) return;
-//
-//         try {
-//             const response = await fetch(`http://localhost:8081/api/cart/${userId}`, {
-//                 method: "GET",
-//                 headers: { Authorization: `Bearer ${token}` },
-//             });
-//
-//             if (!response.ok) throw new Error("Failed to fetch cart");
-//
-//             const data = await response.json();
-//             setCart({
-//                 items: Array.isArray(data.items) ? data.items : [],
-//                 totalPrice: data.totalPrice || 0,
-//             });
-//         } catch (error) {
-//             console.error("Error fetching cart:", error);
-//             setError(error.message);
-//         }
-//     };
-//
-//     // ✅ Define handleAddToCart function
-//     const handleAddToCart = async (productId, quantity) => {
-//         if (!token) {
-//             console.error("❌ Cannot add to cart: Missing token.");
-//             return;
-//         }
-//
-//         try {
-//             const response = await fetch("http://localhost:8081/api/cart/add", {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${token}`, // Send token correctly
-//                 },
-//                 body: JSON.stringify({ productId, quantity }), // Remove userId (handled by backend)
-//             });
-//
-//             if (!response.ok) throw new Error("Failed to add product to cart");
-//
-//             const updatedCart = await response.json();
-//
-//             // Update cart state
-//             setCart((prevCart) => ({
-//                 items: Array.isArray(updatedCart.items) ? updatedCart.items : prevCart.items || [],
-//                 totalPrice: updatedCart.totalPrice || prevCart.totalPrice || 0,
-//             }));
-//
-//         } catch (error) {
-//             console.error("❌ Error adding to cart:", error);
-//             setError(error.message);
-//         }
-//     };
-//
-//     return (
-//         <CartContext.Provider value={{ cart, setCart, loading, error, user, userId, handleAddToCart }}>
-//             {children}
-//         </CartContext.Provider>
-//     );
-// };
-//
-// // ✅ Custom Hook to Use Cart Context
-// export const useCart = () => {
-//     const context = useContext(CartContext);
-//     if (!context) {
-//         throw new Error("useCart must be used within a CartProvider");
-//     }
-//     return context;
-// };

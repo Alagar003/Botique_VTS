@@ -1,21 +1,23 @@
-import React, {useContext, useEffect, useState} from "react";
+
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import {CartContext, useCart} from "./CartContext";
+import { CartContext } from "./CartContext";
 
 const ProductList = () => {
     const { category } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    // const { handleAddToCart } = useCart(); // Using handleAddToCart from CartContext
-    const {handleAddToCart}  = useContext(CartContext);
+    const { handleAddToCart, userId: contextUserId } = useContext(CartContext); // Get userId from context
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [isAdding, setIsAdding] = useState(false);
+    const [addingStates, setAddingStates] = useState({});
 
     const query = new URLSearchParams(location.search).get("query");
+
+    const userId = contextUserId || localStorage.getItem("userId"); // Use localStorage if context is undefined
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -57,10 +59,33 @@ const ProductList = () => {
         fetchProducts();
     }, [category, query, navigate]);
 
+    const handleAdd = async (productId) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Session expired. Please log in again.");
+            navigate("/login");
+            return;
+        }
+
+        if (!userId) {
+            alert("User not found. Please log in again.");
+            navigate("/login");
+            return;
+        }
+
+        setAddingStates((prev) => ({ ...prev, [productId]: true }));
+
+        try {
+            await handleAddToCart(productId, 1);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        } finally {
+            setAddingStates((prev) => ({ ...prev, [productId]: false }));
+        }
+    };
+
     if (loading) return <div>Loading products...</div>;
     if (error) return <div>{error}</div>;
-
-
 
     return (
         <div>
@@ -69,27 +94,18 @@ const ProductList = () => {
             </h1>
             <div className="category-section">
                 {products.map((product) => (
-                    <div key={product.id}>
-                        <div className="category">
-                            <img src={product.image} alt={product.name}/>
-                            <h2>{product.name}</h2>
-                            <p>{product.description}</p>
-                            <p>₹{product.price}</p>
-                            <button
-                                className="sign-in-button"
-                                disabled={isAdding} // Disable button while processing
-                                onClick={async () => {
-                                    if (typeof handleAddToCart === "function") {
-                                        await handleAddToCart(product.id, 1);
-                                        setIsAdding(false);
-                                    } else {
-                                        console.warn("handleAddToCart is not a function");
-                                    }
-                                }}
-                            >
-                                {isAdding ? "Adding..." : "Add to Cart"}
-                            </button>
-                        </div>
+                    <div key={product.id} className="category">
+                        <img src={product.image} alt={product.name} />
+                        <h2>{product.name}</h2>
+                        <p>{product.description}</p>
+                        <p>₹{product.price}</p>
+                        <button
+                            className="sign-in-button"
+                            disabled={addingStates[product.id]}
+                            onClick={() => handleAdd(product.id)}
+                        >
+                            {addingStates[product.id] ? "Adding..." : "Add to Cart"}
+                        </button>
                     </div>
                 ))}
             </div>
