@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Botique_VTS/static/css/main.d6366a18.css",
-    "main.js": "/Botique_VTS/static/js/main.daa05c09.js",
+    "main.js": "/Botique_VTS/static/js/main.51707c9c.js",
     "static/media/login.jpg": "/Botique_VTS/static/media/login.cd53a4d93f319009bfd9.jpg",
     "static/media/infashion-1690967784.png": "/Botique_VTS/static/media/infashion-1690967784.4c2e3493d2a112579480.png",
     "static/media/saree-pictures-2d8qt1hau3xlfjdp-removebg-preview.png": "/Botique_VTS/static/media/saree-pictures-2d8qt1hau3xlfjdp-removebg-preview.a179b453a2750a65802a.png",
@@ -12,10 +12,10 @@
     "static/media/logo.jpg": "/Botique_VTS/static/media/logo.5dc7d9a2fc23d9f6b728.jpg",
     "index.html": "/Botique_VTS/index.html",
     "main.d6366a18.css.map": "/Botique_VTS/static/css/main.d6366a18.css.map",
-    "main.daa05c09.js.map": "/Botique_VTS/static/js/main.daa05c09.js.map"
+    "main.51707c9c.js.map": "/Botique_VTS/static/js/main.51707c9c.js.map"
   },
   "entrypoints": [
     "static/css/main.d6366a18.css",
-    "static/js/main.daa05c09.js"
+    "static/js/main.51707c9c.js"
   ]
 }
