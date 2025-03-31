@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.d6366a18.css",
-    "main.js": "/static/js/main.c4624ff4.js",
-    "static/media/login.jpg": "/static/media/login.cd53a4d93f319009bfd9.jpg",
-    "static/media/infashion-1690967784.png": "/static/media/infashion-1690967784.4c2e3493d2a112579480.png",
-    "static/media/saree-pictures-2d8qt1hau3xlfjdp-removebg-preview.png": "/static/media/saree-pictures-2d8qt1hau3xlfjdp-removebg-preview.a179b453a2750a65802a.png",
-    "static/media/jpg": "/static/media/cfe064dada1df3c62194fba860f86b2d.324e063a6a75e05ffc71.jpg",
-    "static/media/Indian-Traditional-Clothing-min.jpg": "/static/media/Indian-Traditional-Clothing-min.28cf598a368f4a8279aa.jpg",
-    "static/media/GiiwWVAe_jpg": "/static/media/GiiwWVAe_0c44b8c6cd354c10af411a0692f8c599.2734eb804bfda541e46e.jpg",
-    "static/media/istockphoto-524161848-612x612.jpg": "/static/media/istockphoto-524161848-612x612.e32bc80dff6e56b867b6.jpg",
-    "static/media/logo.jpg": "/static/media/logo.5dc7d9a2fc23d9f6b728.jpg",
-    "index.html": "/index.html",
-    "main.d6366a18.css.map": "/static/css/main.d6366a18.css.map",
-    "main.c4624ff4.js.map": "/static/js/main.c4624ff4.js.map"
+    "main.css": "/Botique_VTS/static/css/main.d6366a18.css",
+    "main.js": "/Botique_VTS/static/js/main.daa05c09.js",
+    "static/media/login.jpg": "/Botique_VTS/static/media/login.cd53a4d93f319009bfd9.jpg",
+    "static/media/infashion-1690967784.png": "/Botique_VTS/static/media/infashion-1690967784.4c2e3493d2a112579480.png",
+    "static/media/saree-pictures-2d8qt1hau3xlfjdp-removebg-preview.png": "/Botique_VTS/static/media/saree-pictures-2d8qt1hau3xlfjdp-removebg-preview.a179b453a2750a65802a.png",
+    "static/media/jpg": "/Botique_VTS/static/media/cfe064dada1df3c62194fba860f86b2d.324e063a6a75e05ffc71.jpg",
+    "static/media/Indian-Traditional-Clothing-min.jpg": "/Botique_VTS/static/media/Indian-Traditional-Clothing-min.28cf598a368f4a8279aa.jpg",
+    "static/media/GiiwWVAe_jpg": "/Botique_VTS/static/media/GiiwWVAe_0c44b8c6cd354c10af411a0692f8c599.2734eb804bfda541e46e.jpg",
+    "static/media/istockphoto-524161848-612x612.jpg": "/Botique_VTS/static/media/istockphoto-524161848-612x612.e32bc80dff6e56b867b6.jpg",
+    "static/media/logo.jpg": "/Botique_VTS/static/media/logo.5dc7d9a2fc23d9f6b728.jpg",
+    "index.html": "/Botique_VTS/index.html",
+    "main.d6366a18.css.map": "/Botique_VTS/static/css/main.d6366a18.css.map",
+    "main.daa05c09.js.map": "/Botique_VTS/static/js/main.daa05c09.js.map"
   },
   "entrypoints": [
     "static/css/main.d6366a18.css",
-    "static/js/main.c4624ff4.js"
+    "static/js/main.daa05c09.js"
   ]
 }
